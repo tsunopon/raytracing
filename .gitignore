@@ -21,6 +21,7 @@ Backup/
 *.db
 *.opendb
 *.suo
+*.user
 
 # Prerequisites
 *.d

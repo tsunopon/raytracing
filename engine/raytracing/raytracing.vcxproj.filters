@@ -4,10 +4,33 @@
     <Filter Include="src">
       <UniqueIdentifier>{f9908d0d-893a-4425-993d-6a15df51b380}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\fw">
+      <UniqueIdentifier>{85a678d4-4739-49d1-88f9-cb4d301e5200}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\raytracing_main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\raytracing_windowmanager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raytracing_windowmanager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raytracing_types.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raytracing_forward.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
