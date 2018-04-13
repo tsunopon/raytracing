@@ -1,3 +1,27 @@
+# Visual Studio files
+UpgradeLog.XML
+_UpgradeReport_Files/
+Backup/
+
+*.sdf
+*.opensdf
+*.ipch
+*.ilk
+*.exp
+*.tlog
+*.log
+*.lastbuildstate
+*.cache
+*.bak
+*.old
+*.nul
+*.idb
+*.unsuccessfulbuild
+*.pdb
+*.db
+*.opendb
+*.suo
+
 # Prerequisites
 *.d
 
@@ -30,3 +54,7 @@
 *.exe
 *.out
 *.app
+
+# Windows
+Thumbs.db
+*.link
