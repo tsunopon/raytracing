@@ -26,6 +26,7 @@ ttSphereCollider::~ttSphereCollider() {
 
 bool
 ttSphereCollider::intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const {
+    // 判別式を使って交差判定
     ttVector bc = ray.base - m_->sphere.center;
     float a = ray.direction.dot(ray.direction);
     float b = 2.0f * ray.direction.dot(bc);
@@ -33,11 +34,13 @@ ttSphereCollider::intersect(const ttRay& ray, float a_near, float a_far, Interse
     float D = b * b - 4.0f * a * c;
     if(D > 0) {
         float root = std::sqrt(D);
+        // まずは近いほうから判定
         float temp = (-b - root) / (2.0f * a);
         bool intersect = false;
         if(temp < a_far && temp > a_near) {
             intersect = true;
         } else {
+            // 遠いほうの判定
             temp = (-b + root) / (2.0f * a);
             if(temp < a_far && temp > a_near) {
                 intersect = true;
@@ -45,6 +48,7 @@ ttSphereCollider::intersect(const ttRay& ray, float a_near, float a_far, Interse
         }
         if(intersect) {
             if(info != nullptr) {
+                // 交点と法線を渡す
                 info->t = temp;
                 info->point = ray.base + temp * ray.direction;
                 info->normal = (info->point - m_->sphere.center) / m_->sphere.radius;
