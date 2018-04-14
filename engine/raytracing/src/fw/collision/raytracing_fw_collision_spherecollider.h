@@ -30,6 +30,9 @@ public:
 private:
     struct Member;
     std::unique_ptr<Member> m_;
+
+private:
+    ttNONCOPYABLE(ttSphereCollider);
 };
 
 }}}

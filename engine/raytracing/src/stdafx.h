@@ -17,6 +17,7 @@
 #include <memory>
 #include <map>
 #include <stdint.h>
+#include <vector>
 
 #include <Windows.h>
 

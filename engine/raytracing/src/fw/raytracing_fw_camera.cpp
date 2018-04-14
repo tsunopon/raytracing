@@ -1,0 +1,52 @@
+﻿// -*- coding: utf-8-with-signature-unix; astyle: yes -*-
+//
+//! @file   raytracing_fw_camera.cpp
+//! @brief  
+//! @author Tatsuya TSUNODA
+//! @date   2018/04/15
+//
+//=====================================================================================================================
+#include "stdafx.h"
+#include "./raytracing_fw_camera.h"
+
+#include "./fw/raytracing_fw_types.h"
+
+namespace raytracing { namespace fw { 
+
+ttCamera::ttCamera() {
+}
+
+ttCamera::~ttCamera() {
+}
+
+void
+ttCamera::getRay(float u, float v, uint32_t sampleIndex, ttRay* ray) {
+    ttUNUSED(sampleIndex);
+    update_();
+    ray->base = eye_;
+    ray->direction = baseW_ + baseU_ * u + baseV_ * v - eye_;
+}
+
+void
+ttCamera::setMasSamplingCount(uint32_t count) {
+    maxSamplingCount_ = count;
+}
+
+void
+ttCamera::update_() {
+    if(dirty_) {
+        ttVector u, v, w;
+        float halfH = std::tan(0.5f * (vfovDegree_ * 2 * PI / 360.0f));
+        float halfW = aspect_ * halfH;
+        w = (eye_ - lookat_).normalize();
+        u = up_.cross(w).normalize();
+        v = w.cross(u);
+        baseW_ = eye_ - halfW * u - halfH * v - w;
+        baseU_ = 2.0f * halfW * u;
+        baseV_ = 2.0f * halfH * v;
+
+        dirty_ = false;
+    }
+}
+
+}}

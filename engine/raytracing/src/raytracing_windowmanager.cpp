@@ -135,7 +135,7 @@ ttWindowManager::create(const ttWindowParam& param) {
     // DIB構造体の初期化
     bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bmpInfo.bmiHeader.biWidth = param.width;
-    bmpInfo.bmiHeader.biHeight = param.height;
+    bmpInfo.bmiHeader.biHeight = -1 * static_cast<LONG>(param.height);
     bmpInfo.bmiHeader.biPlanes = 1;
     bmpInfo.bmiHeader.biBitCount = 32;
     bmpInfo.bmiHeader.biCompression = BI_RGB;
@@ -161,7 +161,7 @@ ttWindowManager::terminate() {
 }
 
 static
-uint32_t getColor(float pixels[], uint32_t index) {
+uint32_t getColor(const float pixels[], uint32_t index) {
     uint32_t r = static_cast<uint32_t>(pixels[index] * 255);
     uint32_t g = static_cast<uint32_t>(pixels[index + 1] * 255);
     uint32_t b = static_cast<uint32_t>(pixels[index + 2] * 255);
@@ -169,11 +169,10 @@ uint32_t getColor(float pixels[], uint32_t index) {
 }
 
 void
-ttWindowManager::setWindowColor(float pixels[]) {
-    auto index = 0U;
+ttWindowManager::setWindowColor(const float pixels[]) {
     for(auto h = 0U; h < height_s; ++h) {
         for(auto w = 0U; w < width_s; ++w) {
-            m_->lpPixels[index++] = getColor(pixels, w * 4 + h * height_s);
+            m_->lpPixels[w + h * width_s] = getColor(pixels, w * 4 + h * width_s * 4);
         }
     }
     m_->dirty = true;

@@ -10,6 +10,7 @@
 
 #include "./raytracing_types.h"
 #include "./raytracing_windowmanager.h"
+#include "./raytracing_application.h"
 
 
 #ifdef _DEBUG
@@ -45,15 +46,17 @@ WinMain(
 
     std::unique_ptr<float[]> pixels;
     pixels.reset(new float[param.width * param.height * 4]);
-    for(auto h = 0U; h < param.height; ++h) {
-        for(auto w = 0U; w < param.width; ++w) {
-            pixels[0 + w * 4 + h * param.width] = 0.0f;
-            pixels[1 + w * 4 + h * param.width] = 0.0f;
-            pixels[2 + w * 4 + h * param.width] = 0.0f;
-            pixels[3 + w * 4 + h * param.width] = 1.0f;
-        }
-    }
     winManager.setWindowColor(pixels.get());
+
+    raytracing::ttApplicationArgs args;
+    args.width = 512U;
+    args.height = 512U;
+    args.samplingCount = 1U;
+    raytracing::ttApplication app;
+    app.initialize(args);
+
+    app.run();
+    winManager.setWindowColor(app.getPixels());
 
     // メッセージ処理
     MSG msg;
@@ -69,6 +72,8 @@ WinMain(
     }
     while(msg.message != WM_QUIT);
 
+
+    app.terminate();
     winManager.terminate();
 
     return 0;

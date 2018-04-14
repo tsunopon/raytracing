@@ -27,6 +27,12 @@
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_spherecollider.cpp">
       <Filter>src\fw\collision</Filter>
     </ClCompile>
+    <ClCompile Include="src\raytracing_application.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\raytracing_fw_camera.cpp">
+      <Filter>src\fw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stdafx.h">
@@ -55,6 +61,12 @@
     </ClInclude>
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_spherecollider.h">
       <Filter>src\fw\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raytracing_application.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\raytracing_fw_camera.h">
+      <Filter>src\fw</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
