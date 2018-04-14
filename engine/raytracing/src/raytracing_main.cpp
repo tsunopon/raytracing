@@ -45,8 +45,8 @@ WinMain(
 
     std::unique_ptr<float[]> pixels;
     pixels.reset(new float[512 * 512 * 4]);
-    for(auto w = 0U; w < 512; ++w) {
-        for(auto h = 0U; h < 512; ++h) {
+    for(auto h = 0U; h < 512; ++h) {
+        for(auto w = 0U; w < 512; ++w) {
             pixels[0 + w * 4 + h * 512] = 0.0f;
             pixels[1 + w * 4 + h * 512] = 0.5f;
             pixels[2 + w * 4 + h * 512] = 1.0f;

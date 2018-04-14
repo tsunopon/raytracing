@@ -4,6 +4,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{f9908d0d-893a-4425-993d-6a15df51b380}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\fw">
+      <UniqueIdentifier>{805017f4-df75-4db2-9720-d6196ddfbaf7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\raytracing_main.cpp">
@@ -14,6 +17,9 @@
     </ClCompile>
     <ClCompile Include="src\raytracing_windowmanager.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\raytracing_fw_vecmath.cpp">
+      <Filter>src\fw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -28,6 +34,9 @@
     </ClInclude>
     <ClInclude Include="src\raytracing_forward.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\raytracing_fw_vecmath.h">
+      <Filter>src\fw</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
