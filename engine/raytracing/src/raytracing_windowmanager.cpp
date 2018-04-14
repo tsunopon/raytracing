@@ -15,9 +15,16 @@ namespace raytracing {
 
 static const int MAX_WINDOW_NAME = 128;
 
+static HBITMAP hBitmap_s = NULL;
+static HDC hMemDC_s = NULL;
+static uint32_t width_s = 0;
+static uint32_t height_s = 0;
+
 struct ttWindowManager::Member {
     char windowName[MAX_WINDOW_NAME] = "no name";
     HWND hWnd = NULL;
+    LPDWORD lpPixels = nullptr;
+    bool dirty = false;
 };
 
 ttWindowManager::ttWindowManager() {
@@ -28,8 +35,8 @@ ttWindowManager::~ttWindowManager() {
 }
 
 //! ウィンドウプロージャ
-static LRESULT CALLBACK
-WndProc(
+LRESULT CALLBACK
+winProc(
         HWND hWnd,
         UINT msg,
         WPARAM wParam,
@@ -54,6 +61,18 @@ WndProc(
         default:
             break;
         }
+        break;
+    case WM_PAINT: {
+            PAINTSTRUCT ps;
+            HDC hDC = BeginPaint(hWnd, &ps);
+            BitBlt(hDC, 0, 0, width_s, height_s, hMemDC_s, 0, 0, SRCCOPY);
+            EndPaint(hWnd, &ps);
+        }
+        break;
+    case WM_CLOSE:
+        DeleteDC(hMemDC_s);
+        DeleteObject(hBitmap_s);
+        break;
     default:
         break;
     }
@@ -73,10 +92,13 @@ ttWindowManager::create(const ttWindowParam& param) {
         strcpy_s(m_->windowName, ttARRAYSIZE(m_->windowName), param.windowName);
     }
 
+    width_s = param.width;
+    height_s = param.height;
+
     WNDCLASSEX wcex = {
         sizeof(WNDCLASSEX),
         CS_HREDRAW | CS_VREDRAW,
-        WndProc,
+        &winProc,
         0,
         0,
         hInstance,
@@ -109,6 +131,21 @@ ttWindowManager::create(const ttWindowParam& param) {
         return false;
     }
 
+    BITMAPINFO bmpInfo;
+    // DIB構造体の初期化
+    bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmpInfo.bmiHeader.biWidth = param.width;
+    bmpInfo.bmiHeader.biHeight = param.height;
+    bmpInfo.bmiHeader.biPlanes = 1;
+    bmpInfo.bmiHeader.biBitCount = 32;
+    bmpInfo.bmiHeader.biCompression = BI_RGB;
+
+    HDC hDC = GetDC(m_->hWnd);
+    hMemDC_s = CreateCompatibleDC(hDC);
+    hBitmap_s = CreateDIBSection(NULL, &bmpInfo, DIB_RGB_COLORS, (LPVOID*)&m_->lpPixels, NULL, 0);
+    SelectObject(hMemDC_s, hBitmap_s);
+    ReleaseDC(m_->hWnd, hDC);
+
     return true; 
 }
 
@@ -121,6 +158,33 @@ ttWindowManager::show() {
 void
 ttWindowManager::terminate() {
     m_.reset();
+}
+
+static
+uint32_t getColor(float pixels[], uint32_t index) {
+    uint32_t r = static_cast<uint32_t>(pixels[index] * 255);
+    uint32_t g = static_cast<uint32_t>(pixels[index + 1] * 255);
+    uint32_t b = static_cast<uint32_t>(pixels[index + 2] * 255);
+    return (min(r, 255U) << 16) | (min(g, 255U) << 8) | min(b, 255U);
+}
+
+void
+ttWindowManager::setWindowColor(float pixels[]) {
+    auto index = 0U;
+    for(auto w = 0U; w < width_s; ++w) {
+        for(auto h = 0U; h < height_s; ++h) {
+            m_->lpPixels[index++] = getColor(pixels, w * 4 + h * height_s);
+        }
+    }
+    m_->dirty = true;
+}
+
+void
+ttWindowManager::update() {
+    if(m_->dirty) {
+        UpdateWindow(m_->hWnd);
+        m_->dirty = false;
+    }
 }
 
 }

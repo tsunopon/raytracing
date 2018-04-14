@@ -21,6 +21,12 @@ public:
     //! ウィンドウの表示
     void show();
 
+    //! ウィンドウカラー設定
+    void setWindowColor(float pixels[]);
+
+    //! ウィンドウ更新
+    void update();
+
 private:
     struct Member;
     std::unique_ptr<Member> m_;

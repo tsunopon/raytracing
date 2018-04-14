@@ -34,12 +34,26 @@ WinMain(
     // メモリリーク検出
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
+    
     raytracing::ttWindowManager winManager;
     raytracing::ttWindowParam param;
+    param.width = 512;
+    param.height = 512;
     param.windowName = "Ray Tracing";
     winManager.create(param);
     winManager.show();
+
+    std::unique_ptr<float[]> pixels;
+    pixels.reset(new float[512 * 512 * 4]);
+    for(auto w = 0U; w < 512; ++w) {
+        for(auto h = 0U; h < 512; ++h) {
+            pixels[0 + w * 4 + h * 512] = 0.0f;
+            pixels[1 + w * 4 + h * 512] = 0.5f;
+            pixels[2 + w * 4 + h * 512] = 1.0f;
+            pixels[3 + w * 4 + h * 512] = 1.0f;
+        }
+    }
+    winManager.setWindowColor(pixels.get());
 
     // メッセージ処理
     MSG msg;
@@ -50,7 +64,7 @@ WinMain(
             DispatchMessage(&msg);
         }
         else{
-            
+            winManager.update();
         }
     }
     while(msg.message != WM_QUIT);
