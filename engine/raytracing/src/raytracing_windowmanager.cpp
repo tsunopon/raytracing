@@ -171,8 +171,8 @@ uint32_t getColor(float pixels[], uint32_t index) {
 void
 ttWindowManager::setWindowColor(float pixels[]) {
     auto index = 0U;
-    for(auto w = 0U; w < width_s; ++w) {
-        for(auto h = 0U; h < height_s; ++h) {
+    for(auto h = 0U; h < height_s; ++h) {
+        for(auto w = 0U; w < width_s; ++w) {
             m_->lpPixels[index++] = getColor(pixels, w * 4 + h * height_s);
         }
     }

@@ -27,3 +27,10 @@
 #define ttARRAYSIZE(T) (static_cast<int>(sizeof(T)/sizeof(T[0])))
 
 extern const float PI;
+
+#include "fw/raytracing_fw_forward.h"
+#include "fw/raytracing_fw_vecmath.h"
+
+namespace raytracing {
+using namespace fw;
+}

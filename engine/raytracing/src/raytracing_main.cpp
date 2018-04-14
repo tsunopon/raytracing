@@ -44,13 +44,13 @@ WinMain(
     winManager.show();
 
     std::unique_ptr<float[]> pixels;
-    pixels.reset(new float[512 * 512 * 4]);
-    for(auto h = 0U; h < 512; ++h) {
-        for(auto w = 0U; w < 512; ++w) {
-            pixels[0 + w * 4 + h * 512] = 0.0f;
-            pixels[1 + w * 4 + h * 512] = 0.5f;
-            pixels[2 + w * 4 + h * 512] = 1.0f;
-            pixels[3 + w * 4 + h * 512] = 1.0f;
+    pixels.reset(new float[param.width * param.height * 4]);
+    for(auto h = 0U; h < param.height; ++h) {
+        for(auto w = 0U; w < param.width; ++w) {
+            pixels[0 + w * 4 + h * param.width] = 0.0f;
+            pixels[1 + w * 4 + h * param.width] = 0.0f;
+            pixels[2 + w * 4 + h * param.width] = 0.0f;
+            pixels[3 + w * 4 + h * param.width] = 1.0f;
         }
     }
     winManager.setWindowColor(pixels.get());

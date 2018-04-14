@@ -7,6 +7,9 @@
     <Filter Include="src\fw">
       <UniqueIdentifier>{805017f4-df75-4db2-9720-d6196ddfbaf7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\fw\collision">
+      <UniqueIdentifier>{e434e638-4c96-4df2-8f11-8d36c7b75dfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\raytracing_main.cpp">
@@ -20,6 +23,9 @@
     </ClCompile>
     <ClCompile Include="src\fw\raytracing_fw_vecmath.cpp">
       <Filter>src\fw</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\collision\raytracing_fw_collision_spherecollider.cpp">
+      <Filter>src\fw\collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +43,18 @@
     </ClInclude>
     <ClInclude Include="src\fw\raytracing_fw_vecmath.h">
       <Filter>src\fw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\raytracing_fw_forward.h">
+      <Filter>src\fw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\raytracing_fw_types.h">
+      <Filter>src\fw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\collision\raytracing_fw_collision_icollider.h">
+      <Filter>src\fw\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\collision\raytracing_fw_collision_spherecollider.h">
+      <Filter>src\fw\collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@ namespace raytracing { namespace fw {
 
 class ttMatrix;
 
+//! 行ベクトルクラス(float4要素)
 class ttVector {
 public:
     union {
@@ -35,17 +36,25 @@ public:
         z = vec.z;
         w = vec.w;
     }
+    //! 内積を計算
     static float dot(const ttVector& lhs, const ttVector& rhs);
+    //! 内積を計算
     float dot(const ttVector& vec) const {
         return ttVector::dot(*this, vec);
     }
+    //! 外積を計算
     static ttVector cross(const ttVector& lhs, const ttVector& rhs);
+    //! 外積を計算
     ttVector cross(const ttVector& vec) {
         return cross(*this, vec);
     }
+    //! 正規化ベクトルを計算
     static ttVector normalize(const ttVector& vec);
+    //! ベクトルを正規化する
     ttVector& normalize();
+    //! ベクトルの長さを計算
     static float length(const ttVector& vec);
+    //! ベクトルの長さを取得
     float length() const {
         return ttVector::length(*this);
     }
@@ -85,6 +94,7 @@ public:
     friend ttVector operator*(float lhs, const ttVector& rhs);
 };
 
+//! 4x4行列クラス
 class ttMatrix {
 public:
     union {
@@ -207,20 +217,25 @@ public:
     }
 
 public:
+    //! 射影行列を取得
     static void perspective(
                     ttMatrix* result,
                     float a_near, float a_far,
                     float fovY_degree, float aspect);
+    //! 平行投影行列を取得
     static void orthographic(
                     ttMatrix* result,
                     float a_near, float a_far,
                     float width, float height);
+    //! ビュー行列を取得
     static void lookAt(
                     ttMatrix* result,
                     const ttVector& eye,
                     const ttVector& look,
                     const ttVector& up);
+    //! 移動行列を取得
     static void getTransMatrixPos(ttMatrix* result, float x, float y, float z);
+    //! 拡大縮小行列を取得
     static void getTransMatrixScale(ttMatrix* result, float x, float y, float z);
 };
 
