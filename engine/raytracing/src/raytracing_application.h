@@ -32,6 +32,9 @@ public:
     const char* getProgressText() const;
 
 private:
+    ttVector getColor(const ttRay& ray, uint32_t depth);
+
+private:
     struct Member;
     std::unique_ptr<Member> m_;
     std::atomic_bool quit_ = false;

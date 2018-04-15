@@ -12,6 +12,7 @@
 #include "fw/collision/raytracing_fw_collision_spherecollider.h"
 #include "fw/raytracing_fw_camera.h"
 #include "fw/raytracing_fw_types.h"
+#include "fw/raytracing_fw_random.h"
 
 
 namespace raytracing { 
@@ -26,6 +27,7 @@ struct ttApplication::Member {
     bool finished = false;
     bool isRunning = false;
     char progressText[128] = "";
+    ttRandom rand;
 };
 
 ttApplication::ttApplication() {
@@ -91,21 +93,16 @@ ttApplication::terminate() {
     m_.reset();
 }
 
-static float
-drand48() {
-    return float(((double)(rand()) / (RAND_MAX))); /* RAND_MAX = 32767 */
+static ttVector
+randomVector(ttRandom& rand, float min, float max) {
+    return ttVector(rand.range(min, max), rand.range(min, max), rand.range(min, max), 0.0f);
 }
 
 static ttVector
-randomVector() {
-    return ttVector(drand48(), drand48(), drand48(), 0.0f);
-}
-
-static ttVector
-randomUnitSphere() {
+randomUnitSphere(ttRandom& rand) {
     ttVector p;
     do {
-        p = 2.0f * randomVector() - ttVector(1.0f, 1.0f, 1.0f, 0.0f);
+        p = randomVector(rand, -1.0f, 1.0f);
     } while (p.dot(p) >= 1.0f);
     return p;
 }
@@ -119,12 +116,12 @@ getBackgroundSky(const ttVector& dir) {
     return  (target - base) * t + base;
 }
 
-static ttVector
-getColor(const ttRay& ray, const std::vector<std::unique_ptr<fw::collision::ttICollider>>& scene, uint32_t depth) {
+ttVector
+ttApplication::getColor(const ttRay& ray, uint32_t depth) {
     bool intersected = false;
     float distance = 100000000.0f;
     collision::IntersectInfo info;
-    for(auto& collider : scene) {
+    for(auto& collider : m_->scene) {
         if(collider->intersect(ray, 0.001f, distance, &info)) {
             distance = info.t;
             intersected = true;
@@ -134,10 +131,10 @@ getColor(const ttRay& ray, const std::vector<std::unique_ptr<fw::collision::ttIC
     if(intersected && depth < 50) {
         ttRay nextRay;
         nextRay.base = info.point;
-        ttVector target = info.point + info.normal + randomUnitSphere();
+        ttVector target = info.point + info.normal + randomUnitSphere(m_->rand);
         nextRay.direction = target - info.point; 
         nextRay.direction.w = 0.0f;
-        return 0.3f * getColor(nextRay, scene, depth + 1);
+        return 0.5f * getColor(nextRay, depth + 1);
     } else {
         return getBackgroundSky(ray.direction);
     }
@@ -160,7 +157,7 @@ ttApplication::run() {
                 float u = static_cast<float>(Lw) / m_->width;
                 float v = static_cast<float>(Lh) / m_->height;
                 m_->camera.getRay(u, v, Ls, &ray);
-                auto color = getColor(ray, m_->scene, 0);
+                auto color = getColor(ray, 0);
                 buffer[index + 0] += color.x;
                 buffer[index + 1] += color.y;
                 buffer[index + 2] += color.z;

@@ -33,6 +33,9 @@
     <ClCompile Include="src\fw\raytracing_fw_camera.cpp">
       <Filter>src\fw</Filter>
     </ClCompile>
+    <ClCompile Include="src\fw\raytracing_fw_random.cpp">
+      <Filter>src\fw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stdafx.h">
@@ -66,6 +69,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\fw\raytracing_fw_camera.h">
+      <Filter>src\fw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\raytracing_fw_random.h">
       <Filter>src\fw</Filter>
     </ClInclude>
   </ItemGroup>
