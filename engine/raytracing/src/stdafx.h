@@ -12,6 +12,7 @@
 #pragma warning (disable: 4481)     // override
 #pragma warning (disable: 4201)     // 無名の構造体または共用体
 
+#include <atomic>
 #include <algorithm>
 #include <cassert>
 #include <memory>

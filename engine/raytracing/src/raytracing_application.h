@@ -29,9 +29,13 @@ public:
 
     const float* getPixels() const;
 
+    const char* getProgressText() const;
+
 private:
     struct Member;
     std::unique_ptr<Member> m_;
+    std::atomic_bool quit_ = false;
+    std::atomic_bool enableTerminate_ = false;
 
 private:
     ttNONCOPYABLE(ttApplication);

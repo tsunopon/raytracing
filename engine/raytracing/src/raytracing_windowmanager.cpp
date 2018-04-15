@@ -135,7 +135,7 @@ ttWindowManager::create(const ttWindowParam& param) {
     // DIB構造体の初期化
     bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bmpInfo.bmiHeader.biWidth = param.width;
-    bmpInfo.bmiHeader.biHeight = -1 * static_cast<LONG>(param.height);
+    bmpInfo.bmiHeader.biHeight = static_cast<LONG>(param.height);
     bmpInfo.bmiHeader.biPlanes = 1;
     bmpInfo.bmiHeader.biBitCount = 32;
     bmpInfo.bmiHeader.biCompression = BI_RGB;
@@ -185,6 +185,11 @@ ttWindowManager::update() {
         UpdateWindow(m_->hWnd);
         m_->dirty = false;
     }
+}
+
+void
+ttWindowManager::setWindowTitle(const char* text) {
+    SetWindowText(m_->hWnd, text);
 }
 
 }

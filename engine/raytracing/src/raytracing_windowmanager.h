@@ -27,6 +27,9 @@ public:
     //! ウィンドウ更新
     void update();
 
+    //! ウィンドウタイトル設定
+    void setWindowTitle(const char* text);
+
 private:
     struct Member;
     std::unique_ptr<Member> m_;

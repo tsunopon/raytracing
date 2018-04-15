@@ -38,8 +38,8 @@ WinMain(
     
     raytracing::ttWindowManager winManager;
     raytracing::ttWindowParam param;
-    param.width = 512;
-    param.height = 512;
+    param.width = 640U;
+    param.height = 360U;
     param.windowName = "Ray Tracing";
     winManager.create(param);
     winManager.show();
@@ -49,9 +49,9 @@ WinMain(
     winManager.setWindowColor(pixels.get());
 
     raytracing::ttApplicationArgs args;
-    args.width = 512U;
-    args.height = 512U;
-    args.samplingCount = 1U;
+    args.width = param.width;
+    args.height = param.height;
+    args.samplingCount = 512U;
     raytracing::ttApplication app;
     app.initialize(args);
 
@@ -75,6 +75,7 @@ WinMain(
             auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
             if(msec > 33.333f) {
                 winManager.setWindowColor(app.getPixels());
+                winManager.setWindowTitle(app.getProgressText());
                 start = end;
                 winManager.update();
             }

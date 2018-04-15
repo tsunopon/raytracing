@@ -52,6 +52,8 @@ ttSphereCollider::intersect(const ttRay& ray, float a_near, float a_far, Interse
                 info->t = temp;
                 info->point = ray.base + temp * ray.direction;
                 info->normal = (info->point - m_->sphere.center) / m_->sphere.radius;
+                info->point.w = 0.0f;
+                info->normal.w = 0.0f;
             }
             return true;
         }
