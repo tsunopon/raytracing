@@ -32,7 +32,7 @@ public:
     const char* getProgressText() const;
 
 private:
-    ttVector getColor(const ttRay& ray, uint32_t depth);
+    ttVector getColor_(const ttRay& ray, uint32_t depth);
 
 private:
     struct Member;

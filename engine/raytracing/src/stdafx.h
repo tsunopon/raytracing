@@ -29,6 +29,7 @@
     CLASS(const CLASS&) = delete;    \
     void operator = (const CLASS&) = delete;
 #define ttARRAYSIZE(T) (static_cast<int>(sizeof(T)/sizeof(T[0])))
+#define ttASSERT(CND) assert(CND)
 
 extern const float PI;
 

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_spherecollider.cpp" />
     <ClCompile Include="src\fw\raytracing_fw_camera.cpp" />
+    <ClCompile Include="src\fw\raytracing_fw_lds.cpp" />
     <ClCompile Include="src\fw\raytracing_fw_random.cpp" />
     <ClCompile Include="src\fw\raytracing_fw_vecmath.cpp" />
     <ClCompile Include="src\raytracing_application.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_spherecollider.h" />
     <ClInclude Include="src\fw\raytracing_fw_camera.h" />
     <ClInclude Include="src\fw\raytracing_fw_forward.h" />
+    <ClInclude Include="src\fw\raytracing_fw_lds.h" />
     <ClInclude Include="src\fw\raytracing_fw_random.h" />
     <ClInclude Include="src\fw\raytracing_fw_types.h" />
     <ClInclude Include="src\fw\raytracing_fw_vecmath.h" />

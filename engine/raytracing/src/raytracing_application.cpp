@@ -13,6 +13,7 @@
 #include "fw/raytracing_fw_camera.h"
 #include "fw/raytracing_fw_types.h"
 #include "fw/raytracing_fw_random.h"
+#include "fw/raytracing_fw_lds.h"
 
 
 namespace raytracing { 
@@ -117,7 +118,7 @@ getBackgroundSky(const ttVector& dir) {
 }
 
 ttVector
-ttApplication::getColor(const ttRay& ray, uint32_t depth) {
+ttApplication::getColor_(const ttRay& ray, uint32_t depth) {
     bool intersected = false;
     float distance = 100000000.0f;
     collision::IntersectInfo info;
@@ -134,7 +135,7 @@ ttApplication::getColor(const ttRay& ray, uint32_t depth) {
         ttVector target = info.point + info.normal + randomUnitSphere(m_->rand);
         nextRay.direction = target - info.point; 
         nextRay.direction.w = 0.0f;
-        return 0.5f * getColor(nextRay, depth + 1);
+        return 0.5f * getColor_(nextRay, depth + 1);
     } else {
         return getBackgroundSky(ray.direction);
     }
@@ -150,14 +151,16 @@ ttApplication::run() {
     buffer.reset(new float[m_->width * m_->height * 4U]);
     memset(buffer.get(), 0, sizeof(float) * m_->width * m_->height * 4U);
     sprintf_s(m_->progressText, sizeof(m_->progressText), "RayTrace: %d/%d", 0, m_->samplingCount);
+    ttHaltonSequence halton(2, 0);
     for(auto Ls = 0U; Ls < m_->samplingCount && !quit_; ++Ls) {
+        ttVector offset = halton.get(Ls);
         for(auto Lh = 0U; Lh < m_->height && !quit_; ++Lh) {
             for(auto Lw = 0U; Lw < m_->width && !quit_; ++Lw) {
                 uint32_t index = Lw * 4U + Lh * m_->width * 4U;
-                float u = static_cast<float>(Lw) / m_->width;
-                float v = static_cast<float>(Lh) / m_->height;
+                float u = (offset.x + Lw) / m_->width;
+                float v = (offset.y + Lh) / m_->height;
                 m_->camera.getRay(u, v, Ls, &ray);
-                auto color = getColor(ray, 0);
+                auto color = getColor_(ray, 0);
                 buffer[index + 0] += color.x;
                 buffer[index + 1] += color.y;
                 buffer[index + 2] += color.z;
