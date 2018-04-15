@@ -23,6 +23,8 @@ struct ttApplication::Member {
     std::vector<std::unique_ptr<fw::collision::ttICollider>> scene;
     std::unique_ptr<float[]> pixels;
     ttCamera camera;
+    bool finished = false;
+    bool isRunning = false;
 };
 
 ttApplication::ttApplication() {
@@ -37,7 +39,8 @@ ttApplication::initialize(const ttApplicationArgs& args) {
     m_->width = args.width;
     m_->height = args.height;
     m_->samplingCount = args.samplingCount;
-    
+    m_->finished = false;
+    m_->isRunning = false;
     if(m_->width > 0 && m_->height > 0 && m_->samplingCount > 0) {
         m_->scene.reserve(1);
         // シーン構築
@@ -81,6 +84,8 @@ ttApplication::terminate() {
 void
 ttApplication::run() {
     ttRay ray;
+    m_->finished = false;
+    m_->isRunning = true;
     for(auto Lh = 0U; Lh < m_->height; ++Lh) {
         for(auto Lw = 0U; Lw < m_->width; ++Lw) {
             for(auto Ls = 0U; Ls < m_->samplingCount; ++Ls) {
@@ -111,11 +116,23 @@ ttApplication::run() {
             }
         }
     }
+    m_->finished = true;
+    m_->isRunning = false;
 }
 
 const float*
 ttApplication::getPixels() const{
     return m_->pixels.get();
+}
+
+bool
+ttApplication::finished() const {
+    return m_->finished;
+}
+
+bool
+ttApplication::isRunning() const {
+    return m_->isRunning;
 }
 
 }

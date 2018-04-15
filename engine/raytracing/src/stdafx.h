@@ -18,6 +18,8 @@
 #include <map>
 #include <stdint.h>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 #include <Windows.h>
 

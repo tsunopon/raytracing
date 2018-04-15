@@ -55,8 +55,12 @@ WinMain(
     raytracing::ttApplication app;
     app.initialize(args);
 
-    app.run();
-    winManager.setWindowColor(app.getPixels());
+    std::thread t1([&app]() {
+        app.run();
+    });
+    t1.detach();
+
+    auto start = std::chrono::system_clock::now();
 
     // メッセージ処理
     MSG msg;
@@ -67,7 +71,13 @@ WinMain(
             DispatchMessage(&msg);
         }
         else{
-            winManager.update();
+            auto end = std::chrono::system_clock::now();
+            auto msec = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+            if(msec > 33.333f) {
+                winManager.setWindowColor(app.getPixels());
+                start = end;
+                winManager.update();
+            }
         }
     }
     while(msg.message != WM_QUIT);

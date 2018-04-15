@@ -22,6 +22,11 @@ public:
     //! 終了処理
     void terminate();
 
+    //! 完了したかどうか
+    bool finished() const;
+    //! 実行中かどうか
+    bool isRunning() const;
+
     const float* getPixels() const;
 
 private:

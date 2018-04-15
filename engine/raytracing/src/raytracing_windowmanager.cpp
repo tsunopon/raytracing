@@ -181,6 +181,7 @@ ttWindowManager::setWindowColor(const float pixels[]) {
 void
 ttWindowManager::update() {
     if(m_->dirty) {
+        InvalidateRect(m_->hWnd, 0, false);
         UpdateWindow(m_->hWnd);
         m_->dirty = false;
     }
