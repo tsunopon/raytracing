@@ -20,9 +20,8 @@ ttCamera::~ttCamera() {
 }
 
 void
-ttCamera::getRay(float u, float v, uint32_t sampleIndex, ttRay* ray) {
+ttCamera::getRay(float u, float v, uint32_t sampleIndex, ttRay* ray) const {
     ttUNUSED(sampleIndex);
-    update_();
     ray->base = eye_;
     ray->direction = baseW_ + baseU_ * u + baseV_ * v - eye_;
     ray->base.w = 0.0f;
@@ -35,20 +34,16 @@ ttCamera::setMasSamplingCount(uint32_t count) {
 }
 
 void
-ttCamera::update_() {
-    if(dirty_) {
-        ttVector u, v, w;
-        float halfH = std::tan(0.5f * (vfovDegree_ * 2 * PI / 360.0f));
-        float halfW = aspect_ * halfH;
-        w = (eye_ - lookat_).normalize();
-        u = up_.cross(w).normalize();
-        v = w.cross(u);
-        baseW_ = eye_ - halfW * u - halfH * v - w;
-        baseU_ = 2.0f * halfW * u;
-        baseV_ = 2.0f * halfH * v;
-
-        dirty_ = false;
-    }
+ttCamera::update() {
+    ttVector u, v, w;
+    float halfH = std::tan(0.5f * (vfovDegree_ * 2 * PI / 360.0f));
+    float halfW = aspect_ * halfH;
+    w = (eye_ - lookat_).normalize();
+    u = up_.cross(w).normalize();
+    v = w.cross(u);
+    baseW_ = eye_ - halfW * u - halfH * v - w;
+    baseU_ = 2.0f * halfW * u;
+    baseV_ = 2.0f * halfH * v;
 }
 
 }}

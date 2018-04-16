@@ -30,6 +30,12 @@
     void operator = (const CLASS&) = delete;
 #define ttARRAYSIZE(T) (static_cast<int>(sizeof(T)/sizeof(T[0])))
 #define ttASSERT(CND) assert(CND)
+#define ttDebugLog(str, ...) \
+{ \
+    char c[512]; \
+    sprintf_s(c, 512, str, __VA_ARGS__); \
+    OutputDebugString(c); \
+}
 
 extern const float PI;
 

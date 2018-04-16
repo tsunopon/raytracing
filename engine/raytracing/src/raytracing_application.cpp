@@ -56,6 +56,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
             m_->camera.setEyePos(ttVector(0.0f, 0.5f, 2.0f, 0.0f));
             m_->camera.setLookAt(ttVector(0.0f, 0.25f, 0.0f, 0.0f));
             m_->camera.setUpVector(ttVector(0.0f, 1.0f, 0.0f, 0.0f));
+            m_->camera.update();
 
             // 球配置
             auto sphere = std::unique_ptr<collision::ttSphereCollider>(new collision::ttSphereCollider());
@@ -118,7 +119,7 @@ getBackgroundSky(const ttVector& dir) {
 }
 
 ttVector
-ttApplication::getColor_(const ttRay& ray, uint32_t depth) {
+ttApplication::getColor_(const ttRay& ray, uint32_t depth) const {
     bool intersected = false;
     float distance = 100000000.0f;
     collision::IntersectInfo info;
@@ -154,8 +155,12 @@ ttApplication::run() {
     ttHaltonSequence halton(2, 0);
     for(auto Ls = 0U; Ls < m_->samplingCount && !quit_; ++Ls) {
         ttVector offset = halton.get(Ls);
-        for(auto Lh = 0U; Lh < m_->height && !quit_; ++Lh) {
-            for(auto Lw = 0U; Lw < m_->width && !quit_; ++Lw) {
+        auto weight = 1.0f / (Ls + 1);
+#pragma omp parallel for schedule(dynamic, 1)
+        for(auto Li = 0; Li < static_cast<int>(m_->height * m_->width); ++Li) {
+            if(!quit_) {
+                uint32_t Lw = Li % m_->width;
+                uint32_t Lh = Li / m_->width;
                 uint32_t index = Lw * 4U + Lh * m_->width * 4U;
                 float u = (offset.x + Lw) / m_->width;
                 float v = (offset.y + Lh) / m_->height;
@@ -164,11 +169,9 @@ ttApplication::run() {
                 buffer[index + 0] += color.x;
                 buffer[index + 1] += color.y;
                 buffer[index + 2] += color.z;
-                buffer[index + 3] += 1.0f;
-                m_->pixels[index + 0] = std::pow(buffer[index + 0] / buffer[index + 3], 1 / 2.2f);
-                m_->pixels[index + 1] = std::pow(buffer[index + 1] / buffer[index + 3], 1 / 2.2f);
-                m_->pixels[index + 2] = std::pow(buffer[index + 2] / buffer[index + 3], 1 / 2.2f);
-                m_->pixels[index + 3] = 1.0f;
+                m_->pixels[index + 0] = std::pow(buffer[index + 0] * weight, 1 / 2.2f);
+                m_->pixels[index + 1] = std::pow(buffer[index + 1] * weight, 1 / 2.2f);
+                m_->pixels[index + 2] = std::pow(buffer[index + 2] * weight, 1 / 2.2f);
             }
         }
         sprintf_s(m_->progressText, sizeof(m_->progressText), "RayTrace: %d/%d", Ls + 1, m_->samplingCount);

@@ -14,7 +14,7 @@ public:
     //! @param      v           スクリーンのV座標
     //! @param      sampleIndex 何個目のサンプリング点か？(0, 1, ..., n)
     //! @param[out] ray         レイ
-    void getRay(float u, float v, uint32_t sampleIndex, ttRay* ray);
+    void getRay(float u, float v, uint32_t sampleIndex, ttRay* ray) const;
 
 public:
     //! カメラの注視点を取得
@@ -44,37 +44,30 @@ public:
 
     //! カメラの注視点を設定
     void setLookAt(const ttVector& lookat) {
-        dirty_ = true;
         lookat_ = lookat;
     }
     //! カメラの座標を設定
     void setEyePos(const ttVector& eye) {
-        dirty_ = true;
         eye_ = eye;
     }
     //! カメラのアップベクトルを設定
     void setUpVector(const ttVector& up) {
-        dirty_ = true;
         up_ = up;
     }
     //! カメラのアスペクト比を設定
     void setAspectRatio(float aspect) {
-        dirty_ = true;
         aspect_ = aspect;
     }
     //! カメラの垂直視野角を度単位で設定
     void setVerticalFOV(float degree) {
-        dirty_ = true;
         vfovDegree_ = degree;
     }
     //! 最大サンプリング数を設定
     void setMasSamplingCount(uint32_t count);
 
-private:
-    void update_();
+    void update();
 
 private:
-    bool dirty_ = true;
     ttVector lookat_ = ttVector(0.0f, 0.0f, -1.0f, 0.0f);
     ttVector eye_ = ttVector(0.0f, 0.0f, 0.0f, 0.0f);
     ttVector up_ = ttVector(0.0, 1.0f, 0.0, 0.0f);
