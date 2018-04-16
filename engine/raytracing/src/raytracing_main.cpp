@@ -44,10 +44,6 @@ WinMain(
     winManager.create(param);
     winManager.show();
 
-    std::unique_ptr<float[]> pixels;
-    pixels.reset(new float[param.width * param.height * 4]);
-    winManager.setWindowColor(pixels.get());
-
     raytracing::ttApplicationArgs args;
     args.width = param.width;
     args.height = param.height;

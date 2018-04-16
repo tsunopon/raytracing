@@ -23,7 +23,7 @@ struct ttApplication::Member {
     uint32_t height = 0U;
     uint32_t samplingCount = 0U;
     std::vector<std::unique_ptr<fw::collision::ttICollider>> scene;
-    std::unique_ptr<float[]> pixels;
+    std::unique_ptr<uint32_t[]> pixels;
     ttCamera camera;
     bool finished = false;
     bool isRunning = false;
@@ -71,14 +71,11 @@ ttApplication::initialize(const ttApplicationArgs& args) {
         }
 
         // 描画バッファ確保
-        m_->pixels.reset(new float[m_->width * m_->height * 4U]);
+        m_->pixels.reset(new uint32_t[m_->width * m_->height]);
         for(auto Lh = 0U; Lh < m_->height; ++Lh) {
             for(auto Lw = 0U; Lw < m_->width; ++Lw) {
-                uint32_t index = Lw * 4U + Lh * m_->width * 4U;
-                m_->pixels[index + 0U] = 0.0f;
-                m_->pixels[index + 1U] = 0.0f;
-                m_->pixels[index + 2U] = 0.0f;
-                m_->pixels[index + 3U] = 0.0f;
+                uint32_t index = Lw + Lh * m_->width;
+                m_->pixels[index] = 0U;
             }
         }
         return true;
@@ -142,6 +139,16 @@ ttApplication::getColor_(const ttRay& ray, uint32_t depth) const {
     }
 }
 
+static
+uint32_t getUint32Color(const float pixels[], uint32_t index) {
+    const float GUMMA = 1 / 2.2f;
+    auto weight = 1.0f / pixels[index + 3];
+    uint32_t r = static_cast<uint32_t>(std::pow(pixels[index] * weight, GUMMA) * 255);
+    uint32_t g = static_cast<uint32_t>(std::pow(pixels[index + 1] * weight, GUMMA) * 255);
+    uint32_t b = static_cast<uint32_t>(std::pow(pixels[index + 2] * weight, GUMMA) * 255);
+    return (min(r, 255U) << 16) | (min(g, 255U) << 8) | min(b, 255U);
+}
+
 void
 ttApplication::run() {
     ttRay ray;
@@ -155,7 +162,6 @@ ttApplication::run() {
     ttHaltonSequence halton(2, 0);
     for(auto Ls = 0U; Ls < m_->samplingCount && !quit_; ++Ls) {
         ttVector offset = halton.get(Ls);
-        auto weight = 1.0f / (Ls + 1);
 #pragma omp parallel for schedule(dynamic, 1)
         for(auto Li = 0; Li < static_cast<int>(m_->height * m_->width); ++Li) {
             if(!quit_) {
@@ -169,9 +175,8 @@ ttApplication::run() {
                 buffer[index + 0] += color.x;
                 buffer[index + 1] += color.y;
                 buffer[index + 2] += color.z;
-                m_->pixels[index + 0] = std::pow(buffer[index + 0] * weight, 1 / 2.2f);
-                m_->pixels[index + 1] = std::pow(buffer[index + 1] * weight, 1 / 2.2f);
-                m_->pixels[index + 2] = std::pow(buffer[index + 2] * weight, 1 / 2.2f);
+                buffer[index + 3] += 1.0f;
+                m_->pixels[Li] = getUint32Color(buffer.get(), index);
             }
         }
         sprintf_s(m_->progressText, sizeof(m_->progressText), "RayTrace: %d/%d", Ls + 1, m_->samplingCount);
@@ -181,7 +186,7 @@ ttApplication::run() {
     enableTerminate_ = true;
 }
 
-const float*
+const uint32_t*
 ttApplication::getPixels() const{
     return m_->pixels.get();
 }

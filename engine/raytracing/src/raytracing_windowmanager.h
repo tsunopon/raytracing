@@ -22,7 +22,7 @@ public:
     void show();
 
     //! ウィンドウカラー設定
-    void setWindowColor(const float pixels[]);
+    void setWindowColor(const uint32_t pixels[]);
 
     //! ウィンドウ更新
     void update();

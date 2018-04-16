@@ -27,7 +27,7 @@ public:
     //! 実行中かどうか
     bool isRunning() const;
 
-    const float* getPixels() const;
+    const uint32_t* getPixels() const;
 
     const char* getProgressText() const;
 

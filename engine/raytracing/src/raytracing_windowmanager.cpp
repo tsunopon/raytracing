@@ -160,21 +160,9 @@ ttWindowManager::terminate() {
     m_.reset();
 }
 
-static
-uint32_t getColor(const float pixels[], uint32_t index) {
-    uint32_t r = static_cast<uint32_t>(pixels[index] * 255);
-    uint32_t g = static_cast<uint32_t>(pixels[index + 1] * 255);
-    uint32_t b = static_cast<uint32_t>(pixels[index + 2] * 255);
-    return (min(r, 255U) << 16) | (min(g, 255U) << 8) | min(b, 255U);
-}
-
 void
-ttWindowManager::setWindowColor(const float pixels[]) {
-    for(auto h = 0U; h < height_s; ++h) {
-        for(auto w = 0U; w < width_s; ++w) {
-            m_->lpPixels[w + h * width_s] = getColor(pixels, w * 4 + h * width_s * 4);
-        }
-    }
+ttWindowManager::setWindowColor(const uint32_t pixels[]) {
+    memcpy(m_->lpPixels, pixels, sizeof(uint32_t) * width_s * height_s);
     m_->dirty = true;
 }
 
