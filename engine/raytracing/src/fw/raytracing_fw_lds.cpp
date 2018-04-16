@@ -51,7 +51,7 @@ ttVanDerCorputSequence::get(uint32_t index) {
 }
 
 ttHaltonSequence::ttHaltonSequence(uint32_t dimension, uint32_t cacheCapacity) {
-    ttASSERT(dimension >= 0 && dimension <= 4 && "次元数は1<=n<=4である必要があります");
+    ttASSERT(dimension >= 1 && dimension <= 4 && "次元数は1<=n<=4である必要があります");
 
     uint32_t bases[4] = {2, 3, 5, 7};
     sequences_.reserve(dimension);
