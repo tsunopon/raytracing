@@ -22,6 +22,8 @@ Backup/
 *.opendb
 *.suo
 *.user
+*.iobj
+*.ipdb
 
 # Prerequisites
 *.d
