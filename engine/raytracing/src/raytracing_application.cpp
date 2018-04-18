@@ -9,7 +9,11 @@
 #include "stdafx.h"
 #include "./raytracing_application.h"
 
-#include "fw/collision/raytracing_fw_collision_spherecollider.h"
+#include "fw/raytracing_fw_substance.h"
+#include "fw/collision/raytracing_fw_colliderfactory.h"
+#include "fw/collision/raytracing_fw_collision_icollider.h"
+#include "fw/material/raytracing_fw_materialfactory.h"
+#include "fw/material/raytracing_fw_imaterial.h"
 #include "fw/raytracing_fw_camera.h"
 #include "fw/raytracing_fw_types.h"
 #include "fw/raytracing_fw_random.h"
@@ -22,7 +26,7 @@ struct ttApplication::Member {
     uint32_t width = 0U;
     uint32_t height = 0U;
     uint32_t samplingCount = 0U;
-    std::vector<std::unique_ptr<fw::collision::ttICollider>> scene;
+    std::vector<std::unique_ptr<ttSubstance>> scene;
     std::unique_ptr<uint32_t[]> pixels;
     ttCamera camera;
     bool finished = false;
@@ -58,16 +62,29 @@ ttApplication::initialize(const ttApplicationArgs& args) {
             m_->camera.setUpVector(ttVector(0.0f, 1.0f, 0.0f, 0.0f));
             m_->camera.update();
 
-            // 球配置
-            auto sphere = std::unique_ptr<collision::ttSphereCollider>(new collision::ttSphereCollider());
-            sphere->setCenter(ttVector(0.0f, 0.0f, -1.0f, 0.0f));
-            sphere->setRadius(0.5f);
-            m_->scene.push_back(std::move(sphere));
+            // 球の配置
+            {
+                auto sphere = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::SPHERE);
+                collision::ttColliderFactory::setupSphere(collider.get(), 0.5f, ttVector(0.0f, 0.0f, -1.0f, 0.0f)); 
+                auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
+                material::ttMaterialFactory::setupLambert(mat.get(), ttVector(1.0f, 0.1f, 0.1f, 0.0f));
+                sphere->moveCollider(collider);
+                sphere->moveMaterial(mat);
+                m_->scene.push_back(std::move(sphere));
+            }
 
-            auto sphere2 = std::unique_ptr<collision::ttSphereCollider>(new collision::ttSphereCollider());
-            sphere2->setCenter(ttVector(0.0f, -100.5f, -1.0f, 0.0f));
-            sphere2->setRadius(100.0f);
-            m_->scene.push_back(std::move(sphere2));
+            // 球の配置
+            {
+                auto sphere = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::SPHERE);
+                collision::ttColliderFactory::setupSphere(collider.get(), 100.0f, ttVector(0.0f, -100.5f, -1.0f, 0.0f)); 
+                auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
+                material::ttMaterialFactory::setupLambert(mat.get(), ttVector(1.0f, 1.0f, 1.0f, 0.0f));
+                sphere->moveCollider(collider);
+                sphere->moveMaterial(mat);
+                m_->scene.push_back(std::move(sphere));
+            }
         }
 
         // 描画バッファ確保
@@ -111,7 +128,7 @@ getBackgroundSky(const ttVector& dir) {
     ttVector n = ttVector::normalize(dir);
     float t = 0.5f * (n.y + 1.0f);
     ttVector base(1.0f, 1.0f, 1.0f, 0.0f);
-    ttVector target(0.5, 0.7f, 1.0f, 0.0f);
+    ttVector target(0.5f, 0.7f, 1.0f, 0.0f);
     return  (target - base) * t + base;
 }
 
@@ -120,20 +137,27 @@ ttApplication::getColor_(const ttRay& ray, uint32_t depth) const {
     bool intersected = false;
     float distance = 100000000.0f;
     collision::IntersectInfo info;
-    for(auto& collider : m_->scene) {
+    material::ttIMaterial* mat = nullptr;
+    for(auto& substance : m_->scene) {
+        auto collider = substance->getCollider();
         if(collider->intersect(ray, 0.001f, distance, &info)) {
             distance = info.t;
             intersected = true;
+            mat = substance->getMaterial();
         }
     }
     
-    if(intersected && depth < 50) {
+    if(intersected && depth < 50 && mat) {
         ttRay nextRay;
         nextRay.base = info.point;
         ttVector target = info.point + info.normal + randomUnitSphere(m_->rand);
         nextRay.direction = target - info.point; 
         nextRay.direction.w = 0.0f;
-        return 0.5f * getColor_(nextRay, depth + 1);
+        auto color = getColor_(nextRay, depth + 1);
+        auto dir = ttVector::normalize(nextRay.direction);
+        return color * mat->function(nextRay, ray, info.normal) * dir.dot(info.normal);
+    } else if(depth > 0){
+        return ttVector(3.0f, 3.0f, 3.0f, 0.0f);
     } else {
         return getBackgroundSky(ray.direction);
     }
@@ -143,10 +167,13 @@ static
 uint32_t getUint32Color(const float pixels[], uint32_t index) {
     const float GUMMA = 1 / 2.2f;
     auto weight = 1.0f / pixels[index + 3];
-    uint32_t r = static_cast<uint32_t>(std::pow(pixels[index] * weight, GUMMA) * 255);
-    uint32_t g = static_cast<uint32_t>(std::pow(pixels[index + 1] * weight, GUMMA) * 255);
-    uint32_t b = static_cast<uint32_t>(std::pow(pixels[index + 2] * weight, GUMMA) * 255);
-    return (min(r, 255U) << 16) | (min(g, 255U) << 8) | min(b, 255U);
+    float r = 1.0f - std::exp(-1.0f * pixels[index + 0] * weight);
+    float g = 1.0f - std::exp(-1.0f * pixels[index + 1] * weight);
+    float b = 1.0f - std::exp(-1.0f * pixels[index + 2] * weight);
+    uint32_t r1 = static_cast<uint32_t>(std::pow(r, GUMMA) * 255);
+    uint32_t g1 = static_cast<uint32_t>(std::pow(g, GUMMA) * 255);
+    uint32_t b1 = static_cast<uint32_t>(std::pow(b, GUMMA) * 255);
+    return (min(r1, 255U) << 16) | (min(g1, 255U) << 8) | min(b1, 255U);
 }
 
 void

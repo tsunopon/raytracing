@@ -10,6 +10,9 @@
     <Filter Include="src\fw\collision">
       <UniqueIdentifier>{e434e638-4c96-4df2-8f11-8d36c7b75dfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\fw\material">
+      <UniqueIdentifier>{53422c77-1e6b-4186-8f2f-9f2ac047b9cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\raytracing_main.cpp">
@@ -38,6 +41,18 @@
     </ClCompile>
     <ClCompile Include="src\fw\raytracing_fw_lds.cpp">
       <Filter>src\fw</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\material\raytracing_fw_lambertmaterial.cpp">
+      <Filter>src\fw\material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\raytracing_fw_substance.cpp">
+      <Filter>src\fw</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\material\raytracing_fw_materialfactory.cpp">
+      <Filter>src\fw\material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\collision\raytracing_fw_colliderfactory.cpp">
+      <Filter>src\fw\collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +94,21 @@
     </ClInclude>
     <ClInclude Include="src\fw\raytracing_fw_lds.h">
       <Filter>src\fw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\material\raytracing_fw_imaterial.h">
+      <Filter>src\fw\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\material\raytracing_fw_lambertmaterial.h">
+      <Filter>src\fw\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\raytracing_fw_substance.h">
+      <Filter>src\fw</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\material\raytracing_fw_materialfactory.h">
+      <Filter>src\fw\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\collision\raytracing_fw_colliderfactory.h">
+      <Filter>src\fw\collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
