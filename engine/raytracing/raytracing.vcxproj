@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_spherecollider.cpp" />
-    <ClCompile Include="src\fw\collision\raytracing_fw_colliderfactory.cpp" />
+    <ClCompile Include="src\fw\collision\raytracing_fw_collision_colliderfactory.cpp" />
     <ClCompile Include="src\fw\material\raytracing_fw_lambertmaterial.cpp" />
     <ClCompile Include="src\fw\material\raytracing_fw_materialfactory.cpp" />
     <ClCompile Include="src\fw\raytracing_fw_camera.cpp" />
@@ -36,7 +36,7 @@
   <ItemGroup>
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_icollider.h" />
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_spherecollider.h" />
-    <ClInclude Include="src\fw\collision\raytracing_fw_colliderfactory.h" />
+    <ClInclude Include="src\fw\collision\raytracing_fw_collision_colliderfactory.h" />
     <ClInclude Include="src\fw\material\raytracing_fw_imaterial.h" />
     <ClInclude Include="src\fw\material\raytracing_fw_lambertmaterial.h" />
     <ClInclude Include="src\fw\material\raytracing_fw_materialfactory.h" />

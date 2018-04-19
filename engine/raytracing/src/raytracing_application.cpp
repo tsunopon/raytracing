@@ -10,7 +10,7 @@
 #include "./raytracing_application.h"
 
 #include "fw/raytracing_fw_substance.h"
-#include "fw/collision/raytracing_fw_colliderfactory.h"
+#include "fw/collision/raytracing_fw_collision_colliderfactory.h"
 #include "fw/collision/raytracing_fw_collision_icollider.h"
 #include "fw/material/raytracing_fw_materialfactory.h"
 #include "fw/material/raytracing_fw_imaterial.h"

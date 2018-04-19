@@ -7,7 +7,7 @@
 //
 //=====================================================================================================================
 #include "stdafx.h"
-#include "./raytracing_fw_colliderfactory.h"
+#include "./raytracing_fw_collision_colliderfactory.h"
 
 #include "fw/collision/raytracing_fw_collision_spherecollider.h"
 
