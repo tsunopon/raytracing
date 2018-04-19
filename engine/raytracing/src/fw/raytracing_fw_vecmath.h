@@ -94,6 +94,39 @@ public:
     friend ttVector operator*(float lhs, const ttVector& rhs);
 };
 
+//! 正規直交基底
+class ttOthonormalBasis {
+public:
+    ttOthonormalBasis() {}
+    ~ttOthonormalBasis() {}
+
+    //! W軸を指定して正規直交基底を作成する
+    void createFromWAxis(const ttVector& z);
+    //! 正規直交基底空間に変換
+    ttVector getLocal(const ttVector& vec) {
+        return vec.x * getU() + vec.y * getV() + vec.z * getW();
+    }
+    //! 正規直交基底空間に変換
+    ttVector getLocal(float x, float y, float z) {
+        return x * getU() + y * getV() + z * getW();
+    }
+    //! U軸の取得
+    const ttVector& getU() const {
+        return basis_[0];
+    }
+    //! V軸の取得
+    const ttVector& getV() const {
+        return basis_[1];
+    }
+    //! W軸の取得
+    const ttVector& getW() const {
+        return basis_[2];
+    }
+
+private:
+    ttVector basis_[3];
+};
+
 //! 4x4行列クラス
 class ttMatrix {
 public:

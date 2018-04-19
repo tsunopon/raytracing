@@ -2,9 +2,11 @@
 //=====================================================================================================================
 #pragma once
 
-#include "fw/raytracing_fw_types.h"
-
-namespace raytracing { namespace fw { namespace material { 
+namespace raytracing { namespace fw {
+    
+class ttRandom;
+    
+namespace material { 
 
 class ttIMaterial {
 public:
@@ -19,6 +21,21 @@ public:
 
     //! 反射関数を取得
     virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const = 0;
+
+    //! 次のレイを取得
+    //! param[in] point     基点
+    //! param[in] normal    法線
+    //! param[in] inDir     入力ベクトル
+    //! param[in] random    乱数
+    //! param[out] ray      出力レイ
+    //! param[out] pdf      確率密度関数
+    virtual void getNextRay(
+                    const ttVector& point,
+                    const ttVector& normal,
+                    const ttVector& inDir,
+                    ttRandom& random,
+                    ttRay* ray,
+                    float* pdf) const = 0;
 };
 
 }}}

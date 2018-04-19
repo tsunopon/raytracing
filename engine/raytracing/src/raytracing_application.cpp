@@ -110,20 +110,6 @@ ttApplication::terminate() {
 }
 
 static ttVector
-randomVector(ttRandom& rand, float min, float max) {
-    return ttVector(rand.range(min, max), rand.range(min, max), rand.range(min, max), 0.0f);
-}
-
-static ttVector
-randomUnitSphere(ttRandom& rand) {
-    ttVector p;
-    do {
-        p = randomVector(rand, -1.0f, 1.0f);
-    } while (p.dot(p) >= 1.0f);
-    return p;
-}
-
-static ttVector
 getBackgroundSky(const ttVector& dir) {
     ttVector n = ttVector::normalize(dir);
     float t = 0.5f * (n.y + 1.0f);
@@ -149,13 +135,11 @@ ttApplication::getColor_(const ttRay& ray, uint32_t depth) const {
     
     if(intersected && depth < 50 && mat) {
         ttRay nextRay;
-        nextRay.base = info.point;
-        ttVector target = info.point + info.normal + randomUnitSphere(m_->rand);
-        nextRay.direction = target - info.point; 
-        nextRay.direction.w = 0.0f;
+        float pdf;
+        mat->getNextRay(info.point, info.normal, ray.direction, m_->rand, &nextRay, &pdf);
         auto color = getColor_(nextRay, depth + 1);
         auto dir = ttVector::normalize(nextRay.direction);
-        return color * mat->function(nextRay, ray, info.normal) * dir.dot(info.normal);
+        return color * mat->function(nextRay, ray, info.normal) * dir.dot(info.normal) / max(0.0001f, pdf);
     } else if(depth > 0){
         return ttVector(3.0f, 3.0f, 3.0f, 0.0f);
     } else {

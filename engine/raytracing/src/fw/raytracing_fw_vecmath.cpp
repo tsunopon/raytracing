@@ -24,6 +24,7 @@ ttVector::cross(const ttVector& lhs, const ttVector& rhs) {
     result.x = lhs.y * rhs.z - lhs.z * rhs.y;
     result.y = lhs.z * rhs.x - lhs.x * rhs.z;
     result.z = lhs.x * rhs.y - lhs.y * rhs.x;
+    result.w = 0.0f;
     return result;
 }
 
@@ -69,6 +70,21 @@ operator*(float lhs, const ttVector& rhs) {
     return rhs * lhs;
 }
 
+
+void
+ttOthonormalBasis::createFromWAxis(const ttVector& z) {
+    basis_[2] = z;
+    basis_[2].w = 0.0f;
+    basis_[2].normalize();
+    ttVector a;
+    if(std::fabs(basis_[2].x) >= 0.99f) {
+        a = ttVector(0.0f, 1.0f, 0.0f, 0.0f);
+    } else {
+        a = ttVector(1.0f, 0.0f, 0.0f, 0.0f);
+    }
+    basis_[1] = ttVector::normalize(basis_[2].cross(a));
+    basis_[0] = basis_[2].cross(basis_[1]);
+}
 
 void
 ttMatrix::perspective(
