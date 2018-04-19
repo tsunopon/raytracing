@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\fw\collision\raytracing_fw_collision_rectanglecollider.cpp" />
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_spherecollider.cpp" />
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_colliderfactory.cpp" />
     <ClCompile Include="src\fw\material\raytracing_fw_lambertmaterial.cpp" />
@@ -35,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_icollider.h" />
+    <ClInclude Include="src\fw\collision\raytracing_fw_collision_rectanglecollider.h" />
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_spherecollider.h" />
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_colliderfactory.h" />
     <ClInclude Include="src\fw\material\raytracing_fw_imaterial.h" />

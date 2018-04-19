@@ -54,6 +54,9 @@
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_colliderfactory.cpp">
       <Filter>src\fw\collision</Filter>
     </ClCompile>
+    <ClCompile Include="src\fw\collision\raytracing_fw_collision_rectanglecollider.cpp">
+      <Filter>src\fw\collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stdafx.h">
@@ -108,6 +111,9 @@
       <Filter>src\fw\material</Filter>
     </ClInclude>
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_colliderfactory.h">
+      <Filter>src\fw\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\collision\raytracing_fw_collision_rectanglecollider.h">
       <Filter>src\fw\collision</Filter>
     </ClInclude>
   </ItemGroup>

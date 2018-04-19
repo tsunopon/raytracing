@@ -47,7 +47,7 @@ WinMain(
     raytracing::ttApplicationArgs args;
     args.width = param.width;
     args.height = param.height;
-    args.samplingCount = 512U;
+    args.samplingCount = 1024U;
     raytracing::ttApplication app;
     app.initialize(args);
 

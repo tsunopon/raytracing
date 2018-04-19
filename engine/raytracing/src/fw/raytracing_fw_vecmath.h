@@ -102,6 +102,10 @@ public:
 
     //! W軸を指定して正規直交基底を作成する
     void createFromWAxis(const ttVector& z);
+    //! W軸を指定して正規直交基底を作成する
+    //! param[in] z     元とするz軸
+    //! param[in] up    元とするy軸(必ずしもz軸と直交している必要はない)
+    void createFromWAxis(const ttVector& z, const ttVector& up);
     //! 正規直交基底空間に変換
     ttVector getLocal(const ttVector& vec) {
         return vec.x * getU() + vec.y * getV() + vec.z * getW();

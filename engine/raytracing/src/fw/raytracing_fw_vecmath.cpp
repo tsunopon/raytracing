@@ -87,6 +87,24 @@ ttOthonormalBasis::createFromWAxis(const ttVector& z) {
 }
 
 void
+ttOthonormalBasis::createFromWAxis(const ttVector& z, const ttVector& up) {
+    basis_[2] = z;
+    basis_[2].w = 0.0f;
+    basis_[2].normalize();
+    ttVector a = ttVector::normalize(up);
+    // 無効なアップベクトルならデフォルトのアップベクトルを使用する
+    if(up.dot(basis_[2]) >= 0.99f || up.dot(up) <= 0.01f) {
+        if(std::fabs(basis_[2].x) >= 0.99f) {
+            a = ttVector(0.0f, 1.0f, 0.0f, 0.0f);
+        } else {
+            a = ttVector(1.0f, 0.0f, 0.0f, 0.0f);
+        }
+    }
+    basis_[1] = ttVector::normalize(basis_[2].cross(a));
+    basis_[0] = basis_[2].cross(basis_[1]);
+}
+
+void
 ttMatrix::perspective(
             ttMatrix* result,
             float a_near, float a_far,

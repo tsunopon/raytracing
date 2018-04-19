@@ -24,8 +24,9 @@ ttCamera::getRay(float u, float v, uint32_t sampleIndex, ttRay* ray) const {
     ttUNUSED(sampleIndex);
     ray->base = eye_;
     ray->direction = baseW_ + baseU_ * u + baseV_ * v - eye_;
-    ray->base.w = 0.0f;
     ray->direction.w = 0.0f;
+    ray->direction.normalize();
+    ray->base.w = 0.0f;
 }
 
 void
