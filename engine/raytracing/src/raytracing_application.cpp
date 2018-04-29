@@ -117,14 +117,9 @@ ttApplication::terminate() {
     m_.reset();
 }
 
-static ttVector
-getBackgroundSky(const ttVector& dir) {
-    ttUNUSED(dir);
-    return ttVector(0.0f, 0.0f, 0.0f, 1.0f);
-}
-
 bool
 ttApplication::getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32_t depth, ttVector* color) const {
+    ttUNUSED(prevNormal);
     bool intersected = false;
     float distance = 100000000.0f;
     collision::IntersectInfo info;
@@ -223,8 +218,6 @@ ttApplication::run() {
     memset(buffer.get(), 0, sizeof(float) * m_->width * m_->height * 4U);
     sprintf_s(m_->progressText, sizeof(m_->progressText), "RayTrace: %d/%d", 0, m_->samplingCount);
     ttHaltonSequence halton(2, 0);
-    auto widthInv = 1.0f / m_->width;
-    auto heightInv = 1.0f / m_->height;
     for(auto Ls = 0U; Ls < m_->samplingCount && !quit_; ++Ls) {
         ttVector offset = halton.get(Ls);
 #pragma omp parallel for schedule(dynamic, 1)
