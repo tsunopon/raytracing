@@ -12,8 +12,8 @@
 #include "fw/raytracing_fw_substance.h"
 #include "fw/collision/raytracing_fw_collision_colliderfactory.h"
 #include "fw/collision/raytracing_fw_collision_icollider.h"
-#include "fw/material/raytracing_fw_materialfactory.h"
-#include "fw/material/raytracing_fw_imaterial.h"
+#include "fw/material/raytracing_fw_material_materialfactory.h"
+#include "fw/material/raytracing_fw_material_imaterial.h"
 #include "fw/raytracing_fw_camera.h"
 #include "fw/raytracing_fw_types.h"
 #include "fw/raytracing_fw_random.h"
@@ -57,18 +57,26 @@ ttApplication::initialize(const ttApplicationArgs& args) {
             m_->camera.setAspectRatio(static_cast<float>(m_->width) / m_->height);
             m_->camera.setVerticalFOV(45.0f);
             m_->camera.setMasSamplingCount(m_->samplingCount);
-            m_->camera.setEyePos(ttVector(0.0f, 0.5f, 2.0f, 0.0f));
-            m_->camera.setLookAt(ttVector(0.0f, 0.25f, 0.0f, 0.0f));
+            m_->camera.setEyePos(ttVector(0.0f, 2.0f, 5.0f, 0.0f));
+            m_->camera.setLookAt(ttVector(0.0f, 0.0f, 0.0f, 0.0f));
             m_->camera.setUpVector(ttVector(0.0f, 1.0f, 0.0f, 0.0f));
             m_->camera.update();
 
+            ttVector colors[6] = {
+                ttVector(1.0f, 0.2f, 0.2f, 1.0f),
+                ttVector(0.2f, 1.0f, 0.2f, 1.0f),
+                ttVector(0.2f, 0.2f, 1.0f, 1.0f),
+                ttVector(1.0f, 1.0f, 0.2f, 1.0f),
+                ttVector(0.2f, 1.0f, 1.0f, 1.0f),
+                ttVector(1.0f, 0.2f, 1.0f, 1.0f),
+            };
             // 球の配置
-            {
+            for(auto Li = 0; Li < 6; ++Li) {
                 auto sphere = std::unique_ptr<ttSubstance>(new ttSubstance());
                 auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::SPHERE);
-                collision::ttColliderFactory::setupSphere(collider.get(), 0.5f, ttVector(0.0f, 0.0f, -1.0f, 0.0f)); 
+                collision::ttColliderFactory::setupSphere(collider.get(), 0.5f, ttVector(2.5f - 1.0f * Li, 0.0f, 0.0f, 0.0f)); 
                 auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
-                material::ttMaterialFactory::setupLambert(mat.get(), ttVector(1.0f, 0.1f, 0.1f, 0.0f));
+                material::ttMaterialFactory::setupLambert(mat.get(), colors[Li % 6]);
                 sphere->moveCollider(collider);
                 sphere->moveMaterial(mat);
                 m_->scene.push_back(std::move(sphere));
@@ -78,9 +86,9 @@ ttApplication::initialize(const ttApplicationArgs& args) {
             {
                 auto sphere = std::unique_ptr<ttSubstance>(new ttSubstance());
                 auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::SPHERE);
-                collision::ttColliderFactory::setupSphere(collider.get(), 100.0f, ttVector(0.0f, -100.5f, -1.0f, 0.0f)); 
+                collision::ttColliderFactory::setupSphere(collider.get(), 1000.0f, ttVector(0.0f, -1000.5f, 0.0f, 0.0f)); 
                 auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
-                material::ttMaterialFactory::setupLambert(mat.get(), ttVector(1.0f, 1.0f, 1.0f, 0.0f));
+                material::ttMaterialFactory::setupLambert(mat.get(), ttVector(1.0f, 0.5f, 0.5f, 0.0f));
                 sphere->moveCollider(collider);
                 sphere->moveMaterial(mat);
                 m_->scene.push_back(std::move(sphere));
@@ -111,15 +119,12 @@ ttApplication::terminate() {
 
 static ttVector
 getBackgroundSky(const ttVector& dir) {
-    ttVector n = ttVector::normalize(dir);
-    float t = 0.5f * (n.y + 1.0f);
-    ttVector base(1.0f, 1.0f, 1.0f, 0.0f);
-    ttVector target(0.5f, 0.7f, 1.0f, 0.0f);
-    return  (target - base) * t + base;
+    ttUNUSED(dir);
+    return ttVector(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-ttVector
-ttApplication::getColor_(const ttRay& ray, uint32_t depth) const {
+bool
+ttApplication::getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32_t depth, ttVector* color) const {
     bool intersected = false;
     float distance = 100000000.0f;
     collision::IntersectInfo info;
@@ -133,18 +138,48 @@ ttApplication::getColor_(const ttRay& ray, uint32_t depth) const {
         }
     }
     
-    if(intersected && depth < 50 && mat) {
+    if(intersected && mat) {
+        if(mat->isLight()) {
+            *color = mat->getRadiance(ray, info.point);
+        } else if(depth < 50) {
+            ttRay nextRay;
+            float pdf;
+            mat->getNextRay(info.point, info.normal, ray.direction, m_->rand, &nextRay, &pdf);
+            ttVector c;
+            if(getRadiance_(nextRay, info.normal, depth + 1, &c)) {
+                c.w += max(0.000001f, pdf);
+                float tmp = color->w;
+                *color = c * mat->function(nextRay, ray, info.normal) * max(0.0f, nextRay.direction.dot(info.normal)) / max(0.000001f, pdf);
+                color->w = tmp + pdf;
+                return true;
+            }
+        }
+        // 平行光源の処理
+        intersected = false;
+        distance = 100000000.0f;
+        ttVector lightDir = ttVector(1.0f, -1.0f, 1.0f, 0.0f).normalize();
         ttRay nextRay;
-        float pdf;
-        mat->getNextRay(info.point, info.normal, ray.direction, m_->rand, &nextRay, &pdf);
-        auto color = getColor_(nextRay, depth + 1);
-        auto dir = ttVector::normalize(nextRay.direction);
-        return color * mat->function(nextRay, ray, info.normal) * dir.dot(info.normal) / max(0.0001f, pdf);
-    } else if(depth > 0){
-        return ttVector(3.0f, 3.0f, 3.0f, 0.0f);
-    } else {
-        return getBackgroundSky(ray.direction);
+        nextRay.direction = -1.0f * lightDir;
+        nextRay.base = info.point;
+        for(auto& substance : m_->scene) {
+            auto collider = substance->getCollider();
+            if(collider->intersect(nextRay, 0.001f, distance, &info)) {
+                intersected = true;
+                break;
+            }
+        }
+        if(!intersected) {
+            *color = ttVector(5.0f, 5.0f, 5.0f, 0.0f) * mat->function(nextRay, ray, info.normal) * max(0.0f, nextRay.direction.dot(info.normal));
+            color->w = 1.0f;
+        } else {
+            *color = ttVector();
+            color->w = 1.0f;
+        }
+        return true;
     }
+    *color = ttVector();
+    color->w = 1.0f;
+    return false;
 }
 
 static
@@ -160,9 +195,26 @@ uint32_t getUint32Color(const float pixels[], uint32_t index) {
     return (min(r1, 255U) << 16) | (min(g1, 255U) << 8) | min(b1, 255U);
 }
 
+void ttApplication::calcPixel_(uint32_t Ls, uint32_t Li, const ttVector& offset, float buffer[]) const {
+    uint32_t Lw = Li % m_->width;
+    uint32_t Lh = Li / m_->width;
+    uint32_t index = Lw * 4U + Lh * m_->width * 4U;
+    float u = (offset.x + Lw) / m_->width;
+    float v = (offset.y + Lh) / m_->height;
+    ttRay ray;
+    m_->camera.getRay(u, v, Ls, &ray);
+    ttVector color;
+    getRadiance_(ray, ttVector(0.0f, 1.0f, 0.0f, 0.0f), 0, &color);
+    buffer[index + 0] += color.x;
+    buffer[index + 1] += color.y;
+    buffer[index + 2] += color.z;
+    buffer[index + 3] += color.w;
+    m_->pixels[Li] = getUint32Color(buffer, index);
+
+}
+
 void
 ttApplication::run() {
-    ttRay ray;
     enableTerminate_ = false;
     m_->finished = false;
     m_->isRunning = true;
@@ -171,23 +223,14 @@ ttApplication::run() {
     memset(buffer.get(), 0, sizeof(float) * m_->width * m_->height * 4U);
     sprintf_s(m_->progressText, sizeof(m_->progressText), "RayTrace: %d/%d", 0, m_->samplingCount);
     ttHaltonSequence halton(2, 0);
+    auto widthInv = 1.0f / m_->width;
+    auto heightInv = 1.0f / m_->height;
     for(auto Ls = 0U; Ls < m_->samplingCount && !quit_; ++Ls) {
         ttVector offset = halton.get(Ls);
 #pragma omp parallel for schedule(dynamic, 1)
         for(auto Li = 0; Li < static_cast<int>(m_->height * m_->width); ++Li) {
             if(!quit_) {
-                uint32_t Lw = Li % m_->width;
-                uint32_t Lh = Li / m_->width;
-                uint32_t index = Lw * 4U + Lh * m_->width * 4U;
-                float u = (offset.x + Lw) / m_->width;
-                float v = (offset.y + Lh) / m_->height;
-                m_->camera.getRay(u, v, Ls, &ray);
-                auto color = getColor_(ray, 0);
-                buffer[index + 0] += color.x;
-                buffer[index + 1] += color.y;
-                buffer[index + 2] += color.z;
-                buffer[index + 3] += 1.0f;
-                m_->pixels[Li] = getUint32Color(buffer.get(), index);
+                calcPixel_(Ls, Li, offset, buffer.get());
             }
         }
         sprintf_s(m_->progressText, sizeof(m_->progressText), "RayTrace: %d/%d", Ls + 1, m_->samplingCount);
@@ -215,6 +258,11 @@ ttApplication::isRunning() const {
 const char*
 ttApplication::getProgressText() const {
     return m_->progressText;
+}
+
+bool
+ttApplication::enabled() const {
+    return (m_->isRunning || m_->finished) && !quit_;
 }
 
 }

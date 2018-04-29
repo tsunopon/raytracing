@@ -77,7 +77,7 @@ ttRectangleCollider::enableFilpBackFace(bool enable) {
 void
 ttRectangleCollider::updateLocalBasis_() {
     // ローカル空間の基底軸を計算
-    m_->local.createFromWAxis(m_->normal, m_->up);
+    m_->local.createFromWAxis(-1.0f * m_->normal, m_->up);
     m_->localCenter = m_->local.getLocal(m_->center);
 }
 

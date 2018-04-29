@@ -2,25 +2,25 @@
 //=====================================================================================================================
 #pragma once
 
-namespace raytracing { namespace fw {
-    
-class ttRandom;
-    
-namespace material { 
+#include "fw/material/raytracing_fw_material_imaterial.h"
 
-class ttIMaterial {
+namespace raytracing { namespace fw { namespace material { 
+
+class ttLambertMaterial : public ttIMaterial {
 public:
-    //! デストラクタ
-    virtual ~ttIMaterial() {}
+    ttLambertMaterial();
+    virtual ~ttLambertMaterial();
 
     //! 光源かどうか
-    virtual bool isLight() const = 0;
+    virtual bool isLight() const override {
+        return false;
+    }
 
     //! 放射輝度を取得
-    virtual ttVector getRadiance(const ttRay& outRay, const ttVector& point, const ttVector& normal) const = 0;
+    virtual ttVector getRadiance(const ttRay& outRay, const ttVector& point) const override;
 
     //! 反射関数を取得
-    virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const = 0;
+    virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const override;
 
     //! 次のレイを取得
     //! param[in] point     基点
@@ -35,7 +35,14 @@ public:
                     const ttVector& inDir,
                     ttRandom& random,
                     ttRay* ray,
-                    float* pdf) const = 0;
+                    float* pdf) const override;
+
+public:
+    void setAlbedo(float r, float g, float b);
+
+private:
+    ttVector albedo_;
+    ttVector funcValue_;
 };
 
 }}}

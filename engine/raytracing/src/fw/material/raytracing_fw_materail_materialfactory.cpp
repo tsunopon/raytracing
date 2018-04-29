@@ -7,9 +7,10 @@
 //
 //=====================================================================================================================
 #include "stdafx.h"
-#include "./raytracing_fw_materialfactory.h"
+#include "./raytracing_fw_material_materialfactory.h"
 
-#include "fw/material/raytracing_fw_lambertmaterial.h"
+#include "fw/material/raytracing_fw_material_lambertmaterial.h"
+#include "fw\material\raytracing_fw_material_directionallight.h"
 
 namespace raytracing { namespace fw { namespace material {
 
@@ -19,6 +20,9 @@ ttMaterialFactory::createMaterial(ttMaterialType type) {
     switch (type) {
     case ttMaterialType::LAMBERT:
         mat = new ttLambertMaterial();
+        break;
+    case ttMaterialType::DIRECTIONAL_LIGHT:
+        mat = new ttDirectionalLight();
         break;
     default:
         break;
@@ -31,6 +35,12 @@ void
 ttMaterialFactory::setupLambert(ttIMaterial* mat, const ttVector& albedo) {
     auto lambert = static_cast<ttLambertMaterial*>(mat);
     lambert->setAlbedo(albedo.x, albedo.y, albedo.z);
+}
+
+void
+ttMaterialFactory::setupDirectionalLight(ttIMaterial* mat, const ttVector& lightColor) {
+    auto light = static_cast<ttDirectionalLight*>(mat);
+    light->setLightColor(lightColor.x, lightColor.y, lightColor.z);
 }
 
 }}}

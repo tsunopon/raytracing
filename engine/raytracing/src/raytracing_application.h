@@ -26,13 +26,15 @@ public:
     bool finished() const;
     //! 実行中かどうか
     bool isRunning() const;
+    bool enabled() const;
 
     const uint32_t* getPixels() const;
 
     const char* getProgressText() const;
 
 private:
-    ttVector getColor_(const ttRay& ray, uint32_t depth) const;
+    bool getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32_t depth, ttVector* color) const;
+    void calcPixel_(uint32_t Ls, uint32_t Li, const ttVector& offset, float buffer[]) const;
 
 private:
     struct Member;

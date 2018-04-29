@@ -72,7 +72,7 @@ public:
         return ttVector(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
     }
     ttVector operator*(float rhs) const {
-        return ttVector(x * rhs, y * rhs, z * rhs, z * rhs);
+        return ttVector(x * rhs, y * rhs, z * rhs, w * rhs);
     }
     ttVector operator*(const ttVector& rhs) const {
         return ttVector(x * rhs.x, y * rhs.y, z * rhs.z, w * rhs.w);

@@ -32,7 +32,7 @@ public:
     //! @param      a_far   レイの範囲(最遠位置)
     //! @param[out] info    衝突情報
     //! @return     bool    衝突したかどうか
-    virtual bool intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const = 0;
+    virtual bool intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const;
 
 private:
     void updateLocalBasis_();

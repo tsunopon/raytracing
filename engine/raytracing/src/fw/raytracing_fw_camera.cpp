@@ -37,11 +37,13 @@ ttCamera::setMasSamplingCount(uint32_t count) {
 void
 ttCamera::update() {
     ttVector u, v, w;
-    float halfH = std::tan(0.5f * (vfovDegree_ * 2 * PI / 360.0f));
+    float halfH = std::tan(0.5f * (vfovDegree_ * PI / 180.0f));
     float halfW = aspect_ * halfH;
-    w = (eye_ - lookat_).normalize();
+    w = (eye_ - lookat_);
+    w.w = 0.0;
+    w.normalize();
     u = up_.cross(w).normalize();
-    v = w.cross(u);
+    v = w.cross(u).normalize();
     baseW_ = eye_ - halfW * u - halfH * v - w;
     baseU_ = 2.0f * halfW * u;
     baseV_ = 2.0f * halfH * v;

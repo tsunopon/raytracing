@@ -10,7 +10,7 @@
 #include "./raytracing_fw_substance.h"
 
 #include "fw/collision/raytracing_fw_collision_icollider.h"
-#include "fw/material/raytracing_fw_imaterial.h"
+#include "fw/material/raytracing_fw_material_imaterial.h"
 
 namespace raytracing { namespace fw { 
 

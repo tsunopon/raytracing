@@ -7,7 +7,7 @@
 //
 //=====================================================================================================================
 #include "stdafx.h"
-#include "./raytracing_fw_lambertmaterial.h"
+#include "./raytracing_fw_material_lambertmaterial.h"
 
 #include "fw/raytracing_fw_types.h"
 #include "fw/raytracing_fw_random.h"
@@ -21,10 +21,9 @@ ttLambertMaterial::~ttLambertMaterial() {
 }
 
 ttVector
-ttLambertMaterial::getRadiance(const ttRay& outRay, const ttVector& point, const ttVector& normal) const {
+ttLambertMaterial::getRadiance(const ttRay& outRay, const ttVector& point) const {
     ttUNUSED(outRay);
     ttUNUSED(point);
-    ttUNUSED(normal);
     return ttVector();
 }
 
@@ -70,6 +69,7 @@ ttLambertMaterial::getNextRay(
     ttOthonormalBasis onb;
     onb.createFromWAxis(normal);
     ray->direction = onb.getLocal(x, y, z);
+    ray->direction.w = 0.0f;
     ray->base = point;
     // もちろん確率密度関数はcosθ
     *pdf = cosT;

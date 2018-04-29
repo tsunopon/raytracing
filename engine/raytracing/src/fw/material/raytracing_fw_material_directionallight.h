@@ -2,22 +2,20 @@
 //=====================================================================================================================
 #pragma once
 
-#include "fw/material/raytracing_fw_imaterial.h"
+#include "fw/material/raytracing_fw_material_imaterial.h"
 
 namespace raytracing { namespace fw { namespace material { 
 
-class ttLambertMaterial : public ttIMaterial {
+class ttDirectionalLight : public ttIMaterial {
 public:
-    ttLambertMaterial();
-    virtual ~ttLambertMaterial();
+    ttDirectionalLight();
+    virtual ~ttDirectionalLight();
 
     //! 光源かどうか
-    virtual bool isLight() const override {
-        return false;
-    }
+    virtual bool isLight() const override;
 
     //! 放射輝度を取得
-    virtual ttVector getRadiance(const ttRay& outRay, const ttVector& point, const ttVector& normal) const override;
+    virtual ttVector getRadiance(const ttRay& outRay, const ttVector& point) const override;
 
     //! 反射関数を取得
     virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const override;
@@ -38,11 +36,15 @@ public:
                     float* pdf) const override;
 
 public:
-    void setAlbedo(float r, float g, float b);
+    void setLightColor(float r, float g, float b) {
+        lightColor_.x = r;
+        lightColor_.y = g;
+        lightColor_.z = b;
+        lightColor_.w = 1.0f;
+    }
 
 private:
-    ttVector albedo_;
-    ttVector funcValue_;
+    ttVector lightColor_;
 };
 
 }}}
