@@ -4,7 +4,7 @@
 
 namespace raytracing { namespace fw { 
 
-//! 1次元の低食い違い量列(Low Discrepancy Squences)
+//! 1次元の低食い違い量列(Low Discrepancy Sequences)
 class ttVanDerCorputSequence {
 public:
     ttVanDerCorputSequence(uint32_t base, uint32_t cacheCapacity);
