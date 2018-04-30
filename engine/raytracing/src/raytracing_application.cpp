@@ -57,7 +57,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
             m_->camera.setAspectRatio(static_cast<float>(m_->width) / m_->height);
             m_->camera.setVerticalFOV(45.0f);
             m_->camera.setMasSamplingCount(m_->samplingCount);
-            m_->camera.setEyePos(ttVector(0.0f, 2.0f, 6.0f, 0.0f));
+            m_->camera.setEyePos(ttVector(0.0f, 2.0f, 8.0f, 0.0f));
             m_->camera.setLookAt(ttVector(0.0f, 0.0f, 0.0f, 0.0f));
             m_->camera.setUpVector(ttVector(0.0f, 1.0f, 0.0f, 0.0f));
             m_->camera.update();
@@ -110,6 +110,23 @@ ttApplication::initialize(const ttApplicationArgs& args) {
                 sphere->moveMaterial(mat);
                 m_->scene.push_back(std::move(sphere));
             }
+
+            // ライトの配置
+            {
+                auto light = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::RECTANGLE);
+                collision::ttColliderFactory::setupRectangle(
+                    collider.get(),
+                    3.0f, 3.0f,                                 // size
+                    ttVector(3.0, 2.0f, 1.0f, 0.0f),            // center
+                    ttVector(-1.0f, 0.0f, 0.0f, 0.0f),          // normal
+                    ttVector(0.0f, 1.0f, 0.0f, 0.0f), false);    // up
+                auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::AREA_LIGHT);
+                material::ttMaterialFactory::setupAreaLight(mat.get(), ttVector(5.0f, 5.0f, 5.0f, 0.0f));
+                light->moveCollider(collider);
+                light->moveMaterial(mat);
+                m_->scene.push_back(std::move(light));
+            }
         }
 
         // 描画バッファ確保
@@ -131,6 +148,7 @@ ttApplication::terminate() {
     while(!enableTerminate_){
         Sleep(1);
     }
+    Sleep(1);
     m_.reset();
 }
 
@@ -153,6 +171,7 @@ ttApplication::getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32
     if(intersected && mat) {
         if(mat->isLight()) {
             *color = mat->getRadiance(ray, info.point);
+            return true;
         } else if(depth < 100) {
             ttRay nextRay;
             float pdf;

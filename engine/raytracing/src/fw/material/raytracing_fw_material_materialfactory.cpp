@@ -10,7 +10,8 @@
 #include "./raytracing_fw_material_materialfactory.h"
 
 #include "fw/material/raytracing_fw_material_lambertmaterial.h"
-#include "fw\material\raytracing_fw_material_directionallight.h"
+#include "fw/material/raytracing_fw_material_directionallight.h"
+#include "fw/material/raytracing_fw_material_arealight.h"
 
 namespace raytracing { namespace fw { namespace material {
 
@@ -23,6 +24,9 @@ ttMaterialFactory::createMaterial(ttMaterialType type) {
         break;
     case ttMaterialType::DIRECTIONAL_LIGHT:
         mat = new ttDirectionalLight();
+        break;
+    case ttMaterialType::AREA_LIGHT:
+        mat = new ttAreaLight();
         break;
     default:
         break;
@@ -41,6 +45,12 @@ void
 ttMaterialFactory::setupDirectionalLight(ttIMaterial* mat, const ttVector& lightColor) {
     auto light = static_cast<ttDirectionalLight*>(mat);
     light->setLightColor(lightColor.x, lightColor.y, lightColor.z);
+}
+
+void
+ttMaterialFactory::setupAreaLight(ttIMaterial* mat, const ttVector& lightColor) {
+    auto light = static_cast<ttAreaLight*>(mat);
+    light->setLightColor(lightColor);
 }
 
 }}}

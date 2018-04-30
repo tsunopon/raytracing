@@ -51,17 +51,20 @@
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_rectanglecollider.cpp">
       <Filter>src\fw\collision</Filter>
     </ClCompile>
+    <ClCompile Include="src\fw\collision\raytracing_fw_collision_boxcollider.cpp">
+      <Filter>src\fw\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\material\raytracing_fw_material_arealight.cpp">
+      <Filter>src\fw\material</Filter>
+    </ClCompile>
     <ClCompile Include="src\fw\material\raytracing_fw_material_directionallight.cpp">
       <Filter>src\fw\material</Filter>
     </ClCompile>
-    <ClCompile Include="src\fw\material\raytracing_fw_materail_lambertmaterial.cpp">
+    <ClCompile Include="src\fw\material\raytracing_fw_material_lambertmaterial.cpp">
       <Filter>src\fw\material</Filter>
     </ClCompile>
-    <ClCompile Include="src\fw\material\raytracing_fw_materail_materialfactory.cpp">
+    <ClCompile Include="src\fw\material\raytracing_fw_material_materialfactory.cpp">
       <Filter>src\fw\material</Filter>
-    </ClCompile>
-    <ClCompile Include="src\fw\collision\raytracing_fw_collision_boxcollider.cpp">
-      <Filter>src\fw\collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +116,12 @@
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_rectanglecollider.h">
       <Filter>src\fw\collision</Filter>
     </ClInclude>
+    <ClInclude Include="src\fw\collision\raytracing_fw_collision_boxcollider.h">
+      <Filter>src\fw\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\material\raytracing_fw_material_arealight.h">
+      <Filter>src\fw\material</Filter>
+    </ClInclude>
     <ClInclude Include="src\fw\material\raytracing_fw_material_directionallight.h">
       <Filter>src\fw\material</Filter>
     </ClInclude>
@@ -124,9 +133,6 @@
     </ClInclude>
     <ClInclude Include="src\fw\material\raytracing_fw_material_materialfactory.h">
       <Filter>src\fw\material</Filter>
-    </ClInclude>
-    <ClInclude Include="src\fw\collision\raytracing_fw_collision_boxcollider.h">
-      <Filter>src\fw\collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
