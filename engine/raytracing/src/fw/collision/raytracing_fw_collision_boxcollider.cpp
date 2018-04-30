@@ -1,6 +1,6 @@
 ﻿// -*- coding: utf-8-with-signature-unix; astyle: yes -*-
 //
-//! @file   raytracing_fw_collision_rectanglecollider.cpp
+//! @file   raytracing_fw_collision_boxcollider.cpp
 //! @brief  
 //! @author Tatsuya TSUNODA
 //! @date   2018/04/19
