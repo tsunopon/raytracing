@@ -16,7 +16,7 @@ public:
         return ttColliderType::SPHERE;
     }
 
-    virtual bool intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const override;
+    virtual bool intersect(const ttRay& ray, float a_near, float a_far, ttIntersectInfo* info) const override;
 
 public:
     //! 球情報を取得

@@ -9,11 +9,7 @@
 namespace raytracing { namespace fw { namespace collision {
 
 //! 交差情報
-struct IntersectInfo {
-    float t = 0.0f;     //!< レイの交差位置
-    ttVector point;     //!< 交差座標
-    ttVector normal;    //!< 交差点の法線
-};
+struct ttIntersectInfo;
 
 //! 衝突判定を行うクラスのインターフェース
 class ttICollider {
@@ -29,7 +25,7 @@ public:
     //! @param      a_far   レイの範囲(最遠位置)
     //! @param[out] info    衝突情報
     //! @return     bool    衝突したかどうか
-    virtual bool intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const = 0;
+    virtual bool intersect(const ttRay& ray, float a_near, float a_far, ttIntersectInfo* info) const = 0;
 };
 
 }}}

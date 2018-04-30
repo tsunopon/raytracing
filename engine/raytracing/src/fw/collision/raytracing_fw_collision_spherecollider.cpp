@@ -25,7 +25,7 @@ ttSphereCollider::~ttSphereCollider() {
 }
 
 bool
-ttSphereCollider::intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const {
+ttSphereCollider::intersect(const ttRay& ray, float a_near, float a_far, ttIntersectInfo* info) const {
     // 判別式を使って交差判定
     ttVector bc = ray.base - m_->sphere.center;
     float a = ray.direction.dot(ray.direction);

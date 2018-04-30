@@ -128,7 +128,7 @@ ttBoxCollider::setEnableFilpBackFace(bool enable) {
 }
 
 bool
-ttBoxCollider::intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const {
+ttBoxCollider::intersect(const ttRay& ray, float a_near, float a_far, ttIntersectInfo* info) const {
     bool intersected = false;
     auto Li = 0;
     for(const auto& collider : m_->rect) {

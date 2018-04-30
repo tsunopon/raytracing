@@ -51,6 +51,14 @@ enum class ttColliderType {
     RECTANGLE,
     BOX,
 };
+
+//! 交差情報
+struct ttIntersectInfo {
+    float t = 0.0f;     //!< レイの交差位置
+    ttVector point;     //!< 交差座標
+    ttVector normal;    //!< 交差点の法線
+};
+
 }
 
 }}

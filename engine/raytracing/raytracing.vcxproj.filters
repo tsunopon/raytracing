@@ -13,6 +13,9 @@
     <Filter Include="src\fw\material">
       <UniqueIdentifier>{53422c77-1e6b-4186-8f2f-9f2ac047b9cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\fw\sub">
+      <UniqueIdentifier>{182094d4-2b3f-4d9e-95eb-429e73cc2107}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\raytracing_main.cpp">
@@ -42,9 +45,6 @@
     <ClCompile Include="src\fw\raytracing_fw_lds.cpp">
       <Filter>src\fw</Filter>
     </ClCompile>
-    <ClCompile Include="src\fw\raytracing_fw_substance.cpp">
-      <Filter>src\fw</Filter>
-    </ClCompile>
     <ClCompile Include="src\fw\collision\raytracing_fw_collision_colliderfactory.cpp">
       <Filter>src\fw\collision</Filter>
     </ClCompile>
@@ -65,6 +65,12 @@
     </ClCompile>
     <ClCompile Include="src\fw\material\raytracing_fw_material_directionallight.cpp">
       <Filter>src\fw\material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\sub\raytracing_fw_sub_substance.cpp">
+      <Filter>src\fw\sub</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fw\sub\raytracing_fw_sub_arealightsubstance.cpp">
+      <Filter>src\fw\sub</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,9 +113,6 @@
     <ClInclude Include="src\fw\raytracing_fw_lds.h">
       <Filter>src\fw</Filter>
     </ClInclude>
-    <ClInclude Include="src\fw\raytracing_fw_substance.h">
-      <Filter>src\fw</Filter>
-    </ClInclude>
     <ClInclude Include="src\fw\collision\raytracing_fw_collision_colliderfactory.h">
       <Filter>src\fw\collision</Filter>
     </ClInclude>
@@ -133,6 +136,15 @@
     </ClInclude>
     <ClInclude Include="src\fw\material\raytracing_fw_material_directionallight.h">
       <Filter>src\fw\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\sub\raytracing_fw_sub_substance.h">
+      <Filter>src\fw\sub</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\sub\raytracing_fw_sub_isubstance.h">
+      <Filter>src\fw\sub</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\sub\raytracing_fw_sub_arealightsubstance.h">
+      <Filter>src\fw\sub</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

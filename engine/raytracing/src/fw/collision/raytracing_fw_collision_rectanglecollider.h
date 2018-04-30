@@ -22,7 +22,7 @@ public:
     //! @param      a_far   レイの範囲(最遠位置)
     //! @param[out] info    衝突情報
     //! @return     bool    衝突したかどうか
-    virtual bool intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const override;
+    virtual bool intersect(const ttRay& ray, float a_near, float a_far, ttIntersectInfo* info) const override;
 
 public:
     //! 中心の位置を設定

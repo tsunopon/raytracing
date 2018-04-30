@@ -83,7 +83,7 @@ ttRectangleCollider::updateLocalBasis_() {
 }
 
 bool
-ttRectangleCollider::intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const {
+ttRectangleCollider::intersect(const ttRay& ray, float a_near, float a_far, ttIntersectInfo* info) const {
     ttVector normal = m_->normal;
     if(ray.direction.dot(m_->normal) > 0) {
         if(m_->enableFilpBackFace) {

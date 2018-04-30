@@ -9,7 +9,7 @@
 #include "stdafx.h"
 #include "./raytracing_application.h"
 
-#include "fw/raytracing_fw_substance.h"
+#include "fw/sub/raytracing_fw_sub_substance.h"
 #include "fw/collision/raytracing_fw_collision_colliderfactory.h"
 #include "fw/collision/raytracing_fw_collision_icollider.h"
 #include "fw/material/raytracing_fw_material_materialfactory.h"
@@ -26,7 +26,7 @@ struct ttApplication::Member {
     uint32_t width = 0U;
     uint32_t height = 0U;
     uint32_t samplingCount = 0U;
-    std::vector<std::unique_ptr<ttSubstance>> scene;
+    std::vector<std::unique_ptr<sub::ttISubstance>> scene;
     std::unique_ptr<uint32_t[]> pixels;
     ttCamera camera;
     bool finished = false;
@@ -72,7 +72,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
             };
             // 球の配置
             for(auto Li = 0; Li < 6; ++Li) {
-                auto sphere = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto sphere = std::unique_ptr<sub::ttSubstance>(new sub::ttSubstance());
                 auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::SPHERE);
                 collision::ttColliderFactory::setupSphere(collider.get(), 0.5f, ttVector(2.5f - 1.0f * Li, 0.0f, 0.0f, 0.0f)); 
                 auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
@@ -84,7 +84,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
 
             // 箱を配置
             {
-                auto box = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto box = std::unique_ptr<sub::ttSubstance>(new sub::ttSubstance());
                 auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::BOX);
                 collision::ttColliderFactory::setupBox(
                     collider.get(),
@@ -101,7 +101,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
 
             // 球の配置
             {
-                auto sphere = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto sphere = std::unique_ptr<sub::ttSubstance>(new sub::ttSubstance());
                 auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::SPHERE);
                 collision::ttColliderFactory::setupSphere(collider.get(), 1000.0f, ttVector(0.0f, -1000.5f, 0.0f, 0.0f)); 
                 auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
@@ -113,7 +113,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
 
             // ライトの配置
             {
-                auto light = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto light = std::unique_ptr<sub::ttSubstance>(new sub::ttSubstance());
                 auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::RECTANGLE);
                 collision::ttColliderFactory::setupRectangle(
                     collider.get(),
@@ -157,20 +157,21 @@ ttApplication::getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32
     ttUNUSED(prevNormal);
     bool intersected = false;
     float distance = 100000000.0f;
-    collision::IntersectInfo info;
+    collision::ttIntersectInfo info;
     material::ttIMaterial* mat = nullptr;
+    sub::ttISubstance* sub = nullptr;;
     for(auto& substance : m_->scene) {
         auto collider = substance->getCollider();
         if(collider->intersect(ray, 0.001f, distance, &info)) {
             distance = info.t;
             intersected = true;
             mat = substance->getMaterial();
+            sub = substance.get();
         }
     }
     
-    if(intersected && mat) {
-        if(mat->isLight()) {
-            *color = mat->getRadiance(ray, info.point);
+    if(intersected && mat && sub) {
+        if(sub->getRadiance(ray, info, color)) {
             return true;
         } else if(depth < 100) {
             ttRay nextRay;
@@ -179,7 +180,6 @@ ttApplication::getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32
             ttVector c;
             nextRay.direction.normalize();
             if(getRadiance_(nextRay, info.normal, depth + 1, &c)) {
-                c.w += max(0.000001f, pdf);
                 float tmp = color->w;
                 *color = c * mat->function(nextRay, ray, info.normal) * max(0.0f, nextRay.direction.dot(info.normal)) / max(0.000001f, pdf);
                 color->w = tmp + pdf;
