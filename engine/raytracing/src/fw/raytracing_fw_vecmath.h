@@ -108,11 +108,11 @@ public:
     void createFromWAxis(const ttVector& z, const ttVector& up);
     //! 正規直交基底空間に変換
     ttVector getLocal(const ttVector& vec) {
-        return vec.x * getU() + vec.y * getV() + vec.z * getW();
+        return ttVector(vec.dot(getU()), vec.dot(getV()), vec.dot(getW()), 0.0f);
     }
-    //! 正規直交基底空間に変換
-    ttVector getLocal(float x, float y, float z) {
-        return x * getU() + y * getV() + z * getW();
+    //! 正規直交基底からXYZ空間に変換
+    ttVector getXYZ(float u, float v, float w) {
+        return u * getU() + v * getV() + w * getW();
     }
     //! U軸の取得
     const ttVector& getU() const {

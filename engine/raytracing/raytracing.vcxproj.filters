@@ -60,6 +60,9 @@
     <ClCompile Include="src\fw\material\raytracing_fw_materail_materialfactory.cpp">
       <Filter>src\fw\material</Filter>
     </ClCompile>
+    <ClCompile Include="src\fw\collision\raytracing_fw_collision_boxcollider.cpp">
+      <Filter>src\fw\collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\stdafx.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="src\fw\material\raytracing_fw_material_materialfactory.h">
       <Filter>src\fw\material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\fw\collision\raytracing_fw_collision_boxcollider.h">
+      <Filter>src\fw\collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

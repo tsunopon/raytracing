@@ -57,7 +57,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
             m_->camera.setAspectRatio(static_cast<float>(m_->width) / m_->height);
             m_->camera.setVerticalFOV(45.0f);
             m_->camera.setMasSamplingCount(m_->samplingCount);
-            m_->camera.setEyePos(ttVector(0.0f, 2.0f, 5.0f, 0.0f));
+            m_->camera.setEyePos(ttVector(0.0f, 2.0f, 6.0f, 0.0f));
             m_->camera.setLookAt(ttVector(0.0f, 0.0f, 0.0f, 0.0f));
             m_->camera.setUpVector(ttVector(0.0f, 1.0f, 0.0f, 0.0f));
             m_->camera.update();
@@ -80,6 +80,23 @@ ttApplication::initialize(const ttApplicationArgs& args) {
                 sphere->moveCollider(collider);
                 sphere->moveMaterial(mat);
                 m_->scene.push_back(std::move(sphere));
+            }
+
+            // 箱を配置
+            {
+                auto box = std::unique_ptr<ttSubstance>(new ttSubstance());
+                auto collider = collision::ttColliderFactory::createCollder(collision::ttColliderType::BOX);
+                collision::ttColliderFactory::setupBox(
+                    collider.get(),
+                    ttVector(0.0f, 0.0f, 1.5f, 0.0f),
+                    ttVector(1.0f, 0.0f, 1.0f, 0.0f),
+                    ttVector(0.0f, 1.0f, 0.0f, 0.0f),
+                    ttVector(1.0f, 1.0f, 1.0f, 0.0f), false);
+                auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
+                material::ttMaterialFactory::setupLambert(mat.get(), ttVector(1.0f, 1.0f, 1.0f, 0.0f));
+                box->moveCollider(collider);
+                box->moveMaterial(mat);
+                m_->scene.push_back(std::move(box));
             }
 
             // 球の配置
@@ -136,11 +153,12 @@ ttApplication::getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32
     if(intersected && mat) {
         if(mat->isLight()) {
             *color = mat->getRadiance(ray, info.point);
-        } else if(depth < 50) {
+        } else if(depth < 100) {
             ttRay nextRay;
             float pdf;
             mat->getNextRay(info.point, info.normal, ray.direction, m_->rand, &nextRay, &pdf);
             ttVector c;
+            nextRay.direction.normalize();
             if(getRadiance_(nextRay, info.normal, depth + 1, &c)) {
                 c.w += max(0.000001f, pdf);
                 float tmp = color->w;
@@ -152,7 +170,7 @@ ttApplication::getRadiance_(const ttRay& ray, const ttVector& prevNormal, uint32
         // 平行光源の処理
         intersected = false;
         distance = 100000000.0f;
-        ttVector lightDir = ttVector(1.0f, -1.0f, 1.0f, 0.0f).normalize();
+        ttVector lightDir = ttVector(2.0f, -1.0f, 1.0f, 0.0f).normalize();
         ttRay nextRay;
         nextRay.direction = -1.0f * lightDir;
         nextRay.base = info.point;
@@ -203,7 +221,7 @@ void ttApplication::calcPixel_(uint32_t Ls, uint32_t Li, const ttVector& offset,
     buffer[index + 0] += color.x;
     buffer[index + 1] += color.y;
     buffer[index + 2] += color.z;
-    buffer[index + 3] += color.w;
+    buffer[index + 3] += 1.0f;
     m_->pixels[Li] = getUint32Color(buffer, index);
 
 }

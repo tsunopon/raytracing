@@ -11,7 +11,7 @@
 
 #include "fw/collision/raytracing_fw_collision_spherecollider.h"
 #include "fw/collision/raytracing_fw_collision_rectanglecollider.h"
-
+#include "fw/collision/raytracing_fw_collision_boxcollider.h"
 
 namespace raytracing { namespace fw { namespace collision {
 
@@ -25,6 +25,8 @@ ttColliderFactory::createCollder(ttColliderType type) {
     case ttColliderType::RECTANGLE:
         collider = new ttRectangleCollider();
         break;
+    case ttColliderType::BOX:
+        collider = new ttBoxCollider();
     default:
         break;
     }
@@ -46,6 +48,16 @@ ttColliderFactory::setupRectangle(ttICollider* collider, float width, float heig
     rectangle->setNormal(normal);
     rectangle->setUpVector(up);
     rectangle->enableFilpBackFace(enableFlipBackFace);
+}
+
+void
+ttColliderFactory::setupBox(
+        ttICollider* collider,
+        const ttVector& center, const ttVector& dir, const ttVector& up,
+        const ttVector& size,
+        bool enableFlipBackFace) {
+    auto box = static_cast<ttBoxCollider*>(collider);
+    box->setup(center, dir, up, size, enableFlipBackFace);
 }
 
 }}}

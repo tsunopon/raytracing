@@ -44,6 +44,7 @@ ttRectangleCollider::setCenter(const ttVector& center) {
 void
 ttRectangleCollider::setNormal(const ttVector& normal) {
     m_->normal = normal;
+    m_->normal.normalize();
     updateLocalBasis_();
 }
 
@@ -111,6 +112,11 @@ ttRectangleCollider::intersect(const ttRay& ray, float a_near, float a_far, Inte
     info->t = t;
 
     return true;
+}
+
+const ttOthonormalBasis&
+ttRectangleCollider::getLocalBasis() const {
+    return m_->local;
 }
 
 }}}

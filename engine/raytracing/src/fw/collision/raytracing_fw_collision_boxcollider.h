@@ -6,27 +6,28 @@
 
 namespace raytracing { namespace fw { namespace collision { 
 
-class ttRectangleCollider : public ttICollider {
+class ttBoxCollider : public ttICollider {
 public:
-    ttRectangleCollider();
-    virtual ~ttRectangleCollider();
+    ttBoxCollider();
+    virtual ~ttBoxCollider();
+
+    //! セットアップ
+    void setup(const ttVector& center,
+               const ttVector& dir,
+               const ttVector& up,
+               const ttVector& size,
+               bool enableFlipBackFace);
 
     //! 中心の位置を設定
     void setCenter(const ttVector& center);
-    //! 面の向きを設定
-    void setNormal(const ttVector& normal);
-    //! アップベクトルを設定(長方形の回転を制御)
+    //! 向きを設定
+    void setDirection(const ttVector& normal);
+    //! アップベクトルを設定(回転を制御)
     void setUpVector(const ttVector& up);
     //! 長方形を設定
-    void setRectSize(float width, float height);
-    //! 長方形の幅を設定
-    void setRectWidth(float width);
-    //! 長方形の高さを設定
-    void setRectHeight(float height);
+    void setBoxSize(float xSize, float ySize, float zSize);
     //! 背面を有効にするかどうかを設定
-    void enableFilpBackFace(bool enable);
-    //! ローカル基底軸を取得
-    const ttOthonormalBasis& getLocalBasis() const;
+    void setEnableFilpBackFace(bool enable);
 
     //! @brief      衝突判定
     //! @param[in]  ray     レイ
@@ -37,14 +38,14 @@ public:
     virtual bool intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const;
 
 private:
-    void updateLocalBasis_();
+    void setup_();
 
 private:
     struct Member;
     std::unique_ptr<Member> m_;
 
 private:
-    ttNONCOPYABLE(ttRectangleCollider);
+    ttNONCOPYABLE(ttBoxCollider);
 };
 
 }}}

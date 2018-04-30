@@ -9,6 +9,7 @@ class ttICollider;
 enum class ttColliderType {
     SPHERE = 0,
     RECTANGLE,
+    BOX,
 };
 
 class ttColliderFactory {
@@ -19,6 +20,11 @@ public:
                     ttICollider* collider,
                     float width, float height,
                     const ttVector& center, const ttVector& normal, const ttVector& up,
+                    bool enableFlipBackFace);
+    static void setupBox(
+                    ttICollider* collider,
+                    const ttVector& center, const ttVector& dir, const ttVector& up,
+                    const ttVector& size,
                     bool enableFlipBackFace);
 };
 

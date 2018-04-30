@@ -68,7 +68,7 @@ ttLambertMaterial::getNextRay(
     // 法線を軸とした正規直交基底を作成
     ttOthonormalBasis onb;
     onb.createFromWAxis(normal);
-    ray->direction = onb.getLocal(x, y, z);
+    ray->direction = onb.getXYZ(x, y, z);
     ray->direction.w = 0.0f;
     ray->base = point;
     // もちろん確率密度関数はcosθ
