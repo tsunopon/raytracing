@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "./raytracing_fw_collision_colliderfactory.h"
 
+#include "fw/raytracing_fw_types.h"
 #include "fw/collision/raytracing_fw_collision_spherecollider.h"
 #include "fw/collision/raytracing_fw_collision_rectanglecollider.h"
 #include "fw/collision/raytracing_fw_collision_boxcollider.h"

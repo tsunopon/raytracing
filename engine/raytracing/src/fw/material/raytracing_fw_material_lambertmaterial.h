@@ -22,6 +22,11 @@ public:
     //! 反射関数を取得
     virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const override;
 
+    //! マテリアルの種類を取得
+    virtual ttMaterialType getMaterialType() const override {
+        return ttMaterialType::LAMBERT;
+    }
+
     //! 次のレイを取得
     //! param[in] point     基点
     //! param[in] normal    法線

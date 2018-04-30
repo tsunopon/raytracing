@@ -11,12 +11,7 @@
 
 namespace raytracing { namespace fw { namespace material { 
 
-struct ttAreaLight::Member {
-    ttVector lightColor;
-};
-
 ttAreaLight::ttAreaLight() {
-    m_.reset(new Member());
 }
 
 ttAreaLight::~ttAreaLight() {
@@ -32,7 +27,7 @@ ttVector
 ttAreaLight::getRadiance(const ttRay& outRay, const ttVector& point) const {
     ttUNUSED(outRay);
     ttUNUSED(point);
-    return m_->lightColor;
+    return lightColor_;
 }
 
 ttVector
@@ -59,11 +54,6 @@ ttAreaLight::getNextRay(
     ttUNUSED(ray);
     ttUNUSED(pdf);
     ttASSERT(false && "使用すべきでない関数が呼び出されました");
-}
-
-void
-ttAreaLight::setLightColor(const ttVector& color) {
-    m_->lightColor = color;
 }
 
 }}}

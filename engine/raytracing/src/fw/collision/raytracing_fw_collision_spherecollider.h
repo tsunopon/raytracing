@@ -10,6 +10,12 @@ class ttSphereCollider : public ttICollider {
 public:
     ttSphereCollider();
     virtual ~ttSphereCollider();
+
+    //! コリジョンの種類を取得
+    virtual ttColliderType getColliderType() const override {
+        return ttColliderType::SPHERE;
+    }
+
     virtual bool intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const override;
 
 public:

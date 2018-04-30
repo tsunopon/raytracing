@@ -2,11 +2,15 @@
 //=====================================================================================================================
 #pragma once
 
+#include "fw/raytracing_fw_types.h"
+
 namespace raytracing { namespace fw {
     
 class ttRandom;
-    
+
 namespace material { 
+
+enum class ttMaterialType;
 
 class ttIMaterial {
 public:
@@ -21,6 +25,8 @@ public:
 
     //! 反射関数を取得
     virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const = 0;
+
+    virtual ttMaterialType getMaterialType() const = 0;
 
     //! 次のレイを取得
     //! param[in] point     基点

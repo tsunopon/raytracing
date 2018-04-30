@@ -37,4 +37,20 @@ struct ttAABB {
     ttVector maximum;       //! 最大値座標
 };
 
+namespace material {
+enum class ttMaterialType {
+    LAMBERT = 0,
+    DIRECTIONAL_LIGHT = 1000,
+    AREA_LIGHT,
+};
+}
+
+namespace collision {
+enum class ttColliderType {
+    SPHERE = 0,
+    RECTANGLE,
+    BOX,
+};
+}
+
 }}

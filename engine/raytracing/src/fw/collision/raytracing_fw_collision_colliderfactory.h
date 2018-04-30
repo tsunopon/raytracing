@@ -5,12 +5,7 @@
 namespace raytracing { namespace fw { namespace collision { 
 
 class ttICollider;
-
-enum class ttColliderType {
-    SPHERE = 0,
-    RECTANGLE,
-    BOX,
-};
+enum class ttColliderType;
 
 class ttColliderFactory {
 public:

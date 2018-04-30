@@ -4,6 +4,7 @@
 
 #include "fw/raytracing_fw_forward.h"
 #include "fw/raytracing_fw_vecmath.h"
+#include "fw/raytracing_fw_types.h"
 
 namespace raytracing { namespace fw { namespace collision {
 
@@ -18,6 +19,9 @@ struct IntersectInfo {
 class ttICollider {
 public:
     virtual ~ttICollider() {}
+
+    //! コリジョンの種類を取得
+    virtual ttColliderType getColliderType() const = 0;
 
     //! @brief      衝突判定
     //! @param[in]  ray     レイ

@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "./raytracing_fw_material_materialfactory.h"
 
+#include "fw/raytracing_fw_types.h"
 #include "fw/material/raytracing_fw_material_lambertmaterial.h"
 #include "fw/material/raytracing_fw_material_directionallight.h"
 #include "fw/material/raytracing_fw_material_arealight.h"
@@ -42,9 +43,10 @@ ttMaterialFactory::setupLambert(ttIMaterial* mat, const ttVector& albedo) {
 }
 
 void
-ttMaterialFactory::setupDirectionalLight(ttIMaterial* mat, const ttVector& lightColor) {
+ttMaterialFactory::setupDirectionalLight(ttIMaterial* mat, const ttVector& lightColor, const ttVector& lightDir) {
     auto light = static_cast<ttDirectionalLight*>(mat);
-    light->setLightColor(lightColor.x, lightColor.y, lightColor.z);
+    light->setLightColor(lightColor);
+    light->setLightDirection(lightDir);
 }
 
 void

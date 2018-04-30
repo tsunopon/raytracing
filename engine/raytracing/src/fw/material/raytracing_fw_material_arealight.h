@@ -15,16 +15,23 @@ public:
     virtual ~ttAreaLight();
 
     //! 光源かどうか
-    virtual bool isLight() const;
+    virtual bool isLight() const override;
 
     //! 放射輝度を取得
-    virtual ttVector getRadiance(const ttRay& outRay, const ttVector& point) const;
+    virtual ttVector getRadiance(const ttRay& outRay, const ttVector& point) const override;
 
     //! 反射関数を取得
-    virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const;
+    virtual ttVector function(const ttRay& inRay, const ttRay& outRay, const ttVector& normal) const override;
+
+    //! マテリアルの種類を取得
+    virtual ttMaterialType getMaterialType() const override {
+        return ttMaterialType::AREA_LIGHT;
+    }
 
 public:
-    void setLightColor(const ttVector& color);
+    void setLightColor(const ttVector& color) {
+        lightColor_ = color;
+    }
 
 private:
     //! 次のレイを取得
@@ -43,8 +50,7 @@ private:
                     float* pdf) const;
 
 private:
-    struct Member;
-    std::unique_ptr<Member> m_;
+    ttVector lightColor_;
 };
 
 }}}
