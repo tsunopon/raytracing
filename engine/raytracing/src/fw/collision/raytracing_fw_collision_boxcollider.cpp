@@ -71,11 +71,11 @@ ttBoxCollider::setup_() {
     m_->rect[0].setUpVector(m_->up);
 
     auto local = m_->rect[0].getLocalBasis();
-    m_->rect[1].setNormal(-1.0f * local.getW());
+    m_->rect[1].setNormal(-1.0f * m_->dir);
     m_->rect[2].setNormal(local.getU());
     m_->rect[3].setNormal(-1.0f * local.getU());
-    m_->rect[4].setNormal(local.getV());
-    m_->rect[5].setNormal(-1.0f * local.getV());
+    m_->rect[4].setNormal(-1.0f * local.getV());
+    m_->rect[5].setNormal(local.getV());
 
     m_->rect[1].setUpVector(m_->up);
     m_->rect[2].setUpVector(m_->up);
@@ -83,12 +83,12 @@ ttBoxCollider::setup_() {
     m_->rect[4].setUpVector(local.getU());
     m_->rect[5].setUpVector(local.getU());
 
-    m_->rect[0].setCenter(m_->center - 0.5f * local.getW() * m_->size.z);
-    m_->rect[1].setCenter(m_->center + 0.5f * local.getW() * m_->size.z);
+    m_->rect[0].setCenter(m_->center + 0.5f * local.getW() * m_->size.z);
+    m_->rect[1].setCenter(m_->center - 0.5f * local.getW() * m_->size.z);
     m_->rect[2].setCenter(m_->center + 0.5f * local.getU() * m_->size.x);
     m_->rect[3].setCenter(m_->center - 0.5f * local.getU() * m_->size.x);
-    m_->rect[4].setCenter(m_->center + 0.5f * local.getV() * m_->size.y);
-    m_->rect[5].setCenter(m_->center - 0.5f * local.getV() * m_->size.y);
+    m_->rect[4].setCenter(m_->center - 0.5f * local.getV() * m_->size.y);
+    m_->rect[5].setCenter(m_->center + 0.5f * local.getV() * m_->size.y);
 }
 
 void
@@ -132,16 +132,13 @@ ttBoxCollider::intersect(const ttRay& ray, float a_near, float a_far, IntersectI
     bool intersected = false;
     auto Li = 0;
     for(const auto& collider : m_->rect) {
-        if(Li >= 0) {
+        if(Li <= 6) {
             if(collider.intersect(ray, a_near, a_far, info)) {
                 intersected = true;
                 a_far = info->t;
             }
         }
         ++Li;
-        if(Li >= 6) {
-            break;
-        }
     }
 
     return intersected;

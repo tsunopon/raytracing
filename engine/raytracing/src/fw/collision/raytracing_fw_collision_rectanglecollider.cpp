@@ -78,12 +78,21 @@ ttRectangleCollider::enableFilpBackFace(bool enable) {
 void
 ttRectangleCollider::updateLocalBasis_() {
     // ローカル空間の基底軸を計算
-    m_->local.createFromWAxis(-1.0f * m_->normal, m_->up);
+    m_->local.createFromWAxis(m_->normal, m_->up);
     m_->localCenter = m_->local.getLocal(m_->center);
 }
 
 bool
 ttRectangleCollider::intersect(const ttRay& ray, float a_near, float a_far, IntersectInfo* info) const {
+    ttVector normal = m_->normal;
+    if(ray.direction.dot(m_->normal) > 0) {
+        if(m_->enableFilpBackFace) {
+            normal = -1.0f * m_->normal;
+        } else {
+            return false;
+        }
+    }
+
     // ローカル空間で衝突判定
     auto localBase = m_->local.getLocal(ray.base);
     auto localDir = m_->local.getLocal(ray.direction);
@@ -108,7 +117,7 @@ ttRectangleCollider::intersect(const ttRay& ray, float a_near, float a_far, Inte
     // ローカル座標は回転しか行われていないからtをそのまま使ってワールド座標を計算
     info->point = ray.base + t * ray.direction;
     info->point.w = 0.0f;
-    info->normal = m_->normal;
+    info->normal = normal;
     info->t = t;
 
     return true;

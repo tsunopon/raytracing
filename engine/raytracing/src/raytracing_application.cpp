@@ -91,7 +91,7 @@ ttApplication::initialize(const ttApplicationArgs& args) {
                     ttVector(0.0f, 0.0f, 1.5f, 0.0f),
                     ttVector(1.0f, 0.0f, 1.0f, 0.0f),
                     ttVector(0.0f, 1.0f, 0.0f, 0.0f),
-                    ttVector(1.0f, 1.0f, 1.0f, 0.0f), false);
+                    ttVector(1.0f, 1.0f, 1.0f, 0.0f), true);
                 auto mat = material::ttMaterialFactory::createMaterial(material::ttMaterialType::LAMBERT);
                 material::ttMaterialFactory::setupLambert(mat.get(), ttVector(1.0f, 1.0f, 1.0f, 0.0f));
                 box->moveCollider(collider);
